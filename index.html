@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de cámaras trampa</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg,#eef6ee,#f7faf7);
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
+    color:#1a1a1a;
+}
+
+h1{
+    text-align:center;
+    color:#1b6e2b;
+    font-size:42px;
+    margin-bottom:5px;
+}
+
+h2{
+    text-align:center;
+    color:#2e7d32;
+    font-size:25px;
+    margin-top:5px;
+}
+
+.descripcion{
+    text-align:center;
+    max-width:850px;
+    margin:20px auto 35px auto;
+    font-size:18px;
+    color:#444;
+}
+
+.contenedor{
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    gap:25px;
+    align-items:start;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+}
+
+.card h3{
+    color:#1b6e2b;
+    margin-top:0;
+    font-size:24px;
+}
+
+.panel{
+    border-top:8px solid #2e7d32;
+}
+
+.control{
+    margin:20px 0;
+}
+
+.control label{
+    font-weight:bold;
+    display:block;
+    margin-bottom:8px;
+}
+
+.control-box{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border:1px solid #ccc;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.control-box button{
+    width:45px;
+    height:40px;
+    border:none;
+    background:#f3f8f3;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.control-box span{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.detectabilidad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.detectabilidad button{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    background:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.detectabilidad button.activo{
+    background:#2e7d32;
+    color:white;
+    font-weight:bold;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:15px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+th{
+    background:#f3f8f3;
+    color:#123c16;
+}
+
+td:first-child{
+    text-align:left;
+}
+
+.resultados{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.resultado-box{
+    background:white;
+    border-radius:16px;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+}
+
+.resultado-titulo{
+    font-size:16px;
+    color:#333;
+}
+
+.valor{
+    font-size:42px;
+    color:#1565c0;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.subtexto{
+    font-size:14px;
+    color:#444;
+    margin-top:8px;
+}
+
+.zona-resultados{
+    display:grid;
+    grid-template-columns:1fr 1.5fr;
+    gap:20px;
+}
+
+.lista h4{
+    color:#1b6e2b;
+    margin-bottom:10px;
+}
+
+.detectada{
+    color:#1b5e20;
+    font-weight:bold;
+}
+
+.no-detectada{
+    color:#b71c1c;
+    font-weight:bold;
+}
+
+.grafico{
+    height:280px;
+    border-left:2px solid #999;
+    border-bottom:2px solid #999;
+    position:relative;
+    margin:25px 10px 10px 35px;
+    background:linear-gradient(180deg,#ffffff,#f7faf7);
+}
+
+.punto{
+    width:10px;
+    height:10px;
+    background:#1b6e2b;
+    border-radius:50%;
+    position:absolute;
+}
+
+.linea{
+    height:3px;
+    background:#1b6e2b;
+    position:absolute;
+    transform-origin:left center;
+}
+
+.eje-y{
+    position:absolute;
+    left:-35px;
+    top:0;
+    font-size:14px;
+    color:#555;
+}
+
+.eje-x{
+    text-align:center;
+    margin-top:10px;
+    font-size:15px;
+    color:#555;
+}
+
+.interpretacion{
+    margin-top:25px;
+    background:#ffffff;
+    border-left:8px solid #1565c0;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+    font-size:18px;
+    line-height:1.5;
+}
+
+.aprendizaje{
+    margin-top:25px;
+    background:#f8fbff;
+    border-radius:16px;
+    padding:20px;
+    border:2px solid #cfe3ff;
+    font-size:17px;
+    line-height:1.5;
+}
+
+.botones{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+
+.btn-reset, .btn-ejecutar{
+    border:none;
+    border-radius:24px;
+    padding:12px 22px;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-reset{
+    background:#1565c0;
+}
+
+.btn-reset:hover{
+    background:#0d47a1;
+}
+
+.btn-ejecutar{
+    background:#2e7d32;
+    width:100%;
+    margin-top:20px;
+}
+
+.btn-ejecutar:hover{
+    background:#1b5e20;
+}
+
+.btn-menu{
+    display:inline-block;
+    text-decoration:none;
+    border-radius:24px;
+    padding:12px 22px;
+    background:#2e7d32;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.btn-menu:hover{
+    background:#1b5e20;
+}
+
+footer{
+    text-align:center;
+    margin-top:50px;
+    color:#666;
+    font-size:15px;
+    border-top:1px solid #ddd;
+    padding-top:18px;
+}
+
+@media(max-width:1000px){
+    .contenedor{
+        grid-template-columns:1fr;
+    }
+
+    .resultados{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .zona-resultados{
+        grid-template-columns:1fr;
+    }
+
+    h1{
+        font-size:32px;
+    }
+}
+
+@media(max-width:600px){
+    .resultados{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>📷 Simulador de cámaras trampa</h1>
+<h2>Monitoreo de fauna silvestre y detectabilidad imperfecta</h2>
+
+<p class="descripcion">
+Modifica el número de cámaras, los días de muestreo y la detectabilidad general para observar cómo cambia la riqueza observada, 
+la tasa de captura y la acumulación de especies detectadas.
+</p>
+
+<div class="contenedor">
+
+<div class="card panel">
+<h3>Configuración del monitoreo</h3>
+
+<div class="control">
+<label>📷 Número de cámaras</label>
+<div class="control-box">
+<button onclick="cambiarCamaras(-1)">−</button>
+<span id="camaras">10</span>
+<button onclick="cambiarCamaras(1)">+</button>
+</div>
+<div class="subtexto">Rango: 1 a 50 cámaras</div>
+</div>
+
+<div class="control">
+<label>📅 Días de muestreo</label>
+<div class="control-box">
+<button onclick="cambiarDias(-1)">−</button>
+<span id="dias">30</span>
+<button onclick="cambiarDias(1)">+</button>
+</div>
+<div class="subtexto">Rango: 1 a 365 días</div>
+</div>
+
+<div class="control">
+<label>👁️ Detectabilidad general</label>
+<div class="detectabilidad">
+<button id="baja" onclick="setDetectabilidad('baja')">Baja</button>
+<button id="media" class="activo" onclick="setDetectabilidad('media')">Media</button>
+<button id="alta" onclick="setDetectabilidad('alta')">Alta</button>
+</div>
+<div class="subtexto">Ajusta la probabilidad general de detección.</div>
+</div>
+
+<h3>Fauna disponible</h3>
+
+<table>
+<thead>
+<tr><th>Especie</th><th>Detectabilidad base</th></tr>
+</thead>
+<tbody id="tablaEspecies"></tbody>
+</table>
+
+<button class="btn-ejecutar" onclick="ejecutarMonitoreo()">▶ Ejecutar monitoreo</button>
+
+</div>
+
+<div>
+
+<div class="resultados">
+
+<div class="resultado-box">
+<div class="resultado-titulo">Especies detectadas</div>
+<div id="especiesDetectadas" class="valor">0 / 8</div>
+<div class="subtexto">Del total de especies presentes</div>
+</div>
+
+<div class="resultado-box">
+<div class="resultado-titulo">Riqueza observada</div>
+<div id="riquezaObservada" class="valor">0</div>
+<div class="subtexto">Especies registradas</div>
+</div>
+
+<div class="resultado-box">
+<div class="resultado-titulo">Tasa de captura</div>
+<div id="tasaCaptura" class="valor">0.00</div>
+<div class="subtexto">Registros por cámara-día</div>
+</div>
+
+<div class="resultado-box">
+<div class="resultado-titulo">Esfuerzo de muestreo</div>
+<div id="esfuerzo" class="valor">300</div>
+<div class="subtexto">Cámaras-día</div>
+</div>
+
+</div>
+
+<div class="zona-resultados">
+
+<div class="card lista">
+<h3>Especies detectadas</h3>
+<div id="listaDetectadas"></div>
+
+<h3>Especies no detectadas</h3>
+<div id="listaNoDetectadas"></div>
+</div>
+
+<div class="card">
+<h3>Curva de acumulación de especies</h3>
+<div class="grafico" id="grafico"></div>
+<div class="eje-x">Días de muestreo</div>
+</div>
+
+</div>
+
+<div class="interpretacion">
+<strong>Interpretación:</strong>
+<div id="textoInterpretacion">
+Ejecuta el monitoreo para generar una simulación de detección de especies.
+</div>
+</div>
+
+<div class="aprendizaje">
+<strong>¿Qué aprendemos?</strong><br><br>
+✔ A mayor esfuerzo de muestreo, aumenta la probabilidad de detectar especies.<br>
+✔ Cada especie posee una detectabilidad diferente.<br>
+✔ La riqueza observada no siempre representa la riqueza real del área.<br>
+✔ Las cámaras trampa requieren planificación y esfuerzo de muestreo adecuado.
+</div>
+
+</div>
+
+</div>
+
+<div class="botones">
+<button class="btn-reset" onclick="reiniciar()">↻ Reiniciar simulación</button>
+
+<a class="btn-menu" href="https://jleichtle-prof.github.io/laboratorio-fauna-silvestre/">
+🏠 Menú principal
+</a>
+</div>
+
+<footer>
+Desarrollado por Jorge Leichtle © 2026
+</footer>
+
+<script>
+let numCamaras = 10;
+let numDias = 30;
+let nivelDetectabilidad = "media";
+
+const especies = [
+    {nombre:"Zorro culpeo", icono:"🦊", base:0.70},
+    {nombre:"Chingue", icono:"🦨", base:0.45},
+    {nombre:"Liebre", icono:"🐇", base:0.65},
+    {nombre:"Guiña", icono:"🐱", base:0.15},
+    {nombre:"Degú", icono:"🐭", base:0.20},
+    {nombre:"Tucúquere", icono:"🦉", base:0.25},
+    {nombre:"Tiuque", icono:"🦅", base:0.40},
+    {nombre:"Sapito de cuatro ojos", icono:"🐸", base:0.05}
+];
+
+function crearTablaEspecies(){
+    const tbody = document.getElementById("tablaEspecies");
+    tbody.innerHTML = "";
+
+    especies.forEach(e=>{
+        let categoria = "Baja";
+        if(e.base >= 0.60) categoria = "Alta";
+        else if(e.base >= 0.35) categoria = "Media";
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td><span style="font-size:22px; margin-right:8px;">${e.icono}</span>${e.nombre}</td>
+            <td>${categoria} (${e.base.toFixed(2)})</td>
+        `;
+        tbody.appendChild(fila);
+    });
+}
+
+function cambiarCamaras(valor){
+    numCamaras += valor;
+    if(numCamaras < 1) numCamaras = 1;
+    if(numCamaras > 50) numCamaras = 50;
+    document.getElementById("camaras").innerText = numCamaras;
+    actualizarEsfuerzo();
+}
+
+function cambiarDias(valor){
+    numDias += valor;
+    if(numDias < 1) numDias = 1;
+    if(numDias > 365) numDias = 365;
+    document.getElementById("dias").innerText = numDias;
+    actualizarEsfuerzo();
+}
+
+function setDetectabilidad(nivel){
+    nivelDetectabilidad = nivel;
+
+    ["baja","media","alta"].forEach(id=>{
+        document.getElementById(id).classList.remove("activo");
+    });
+
+    document.getElementById(nivel).classList.add("activo");
+}
+
+function factorDetectabilidad(){
+    if(nivelDetectabilidad === "baja") return 0.6;
+    if(nivelDetectabilidad === "alta") return 1.4;
+    return 1.0;
+}
+
+function actualizarEsfuerzo(){
+    document.getElementById("esfuerzo").innerText = numCamaras * numDias;
+}
+
+function probabilidadDeteccion(especie, dias){
+    const esfuerzoRelativo = (numCamaras * dias) / 300;
+    let p = especie.base * factorDetectabilidad() * esfuerzoRelativo;
+    if(p > 0.95) p = 0.95;
+    return p;
+}
+
+function ejecutarMonitoreo(){
+    const detectadas = [];
+    const noDetectadas = [];
+    let registrosTotales = 0;
+    let acumulacion = [];
+
+    for(let dia = 1; dia <= numDias; dia++){
+        let especiesHastaDia = new Set();
+
+        especies.forEach(especie=>{
+            const p = probabilidadDeteccion(especie, dia);
+            if(Math.random() < p){
+                especiesHastaDia.add(especie.nombre);
+            }
+        });
+
+        acumulacion.push(especiesHastaDia.size);
+    }
+
+    especies.forEach(especie=>{
+        const pFinal = probabilidadDeteccion(especie, numDias);
+        const detectada = Math.random() < pFinal;
+
+        if(detectada){
+            const registros = Math.max(1, Math.round(pFinal * numCamaras * numDias * (0.2 + Math.random())));
+            registrosTotales += registros;
+            detectadas.push({...especie, registros:registros});
+        }else{
+            noDetectadas.push(especie);
+        }
+    });
+
+    const riqueza = detectadas.length;
+    const esfuerzo = numCamaras * numDias;
+    const tasa = esfuerzo > 0 ? registrosTotales / esfuerzo : 0;
+
+    document.getElementById("especiesDetectadas").innerText = `${riqueza} / ${especies.length}`;
+    document.getElementById("riquezaObservada").innerText = riqueza;
+    document.getElementById("tasaCaptura").innerText = tasa.toFixed(2);
+    document.getElementById("esfuerzo").innerText = esfuerzo;
+
+    actualizarListas(detectadas, noDetectadas);
+    dibujarGrafico(acumulacion, riqueza);
+    interpretar(riqueza, tasa);
+}
+
+function actualizarListas(detectadas, noDetectadas){
+    const divDetectadas = document.getElementById("listaDetectadas");
+    const divNoDetectadas = document.getElementById("listaNoDetectadas");
+
+    divDetectadas.innerHTML = "";
+    divNoDetectadas.innerHTML = "";
+
+    if(detectadas.length === 0){
+        divDetectadas.innerHTML = "<p>Ninguna especie detectada.</p>";
+    }
+
+    detectadas.forEach(e=>{
+        divDetectadas.innerHTML += `
+            <p class="detectada">✔ ${e.icono} ${e.nombre}<br>
+            <span style="color:#444; font-weight:normal;">${e.registros} registros</span></p>
+        `;
+    });
+
+    if(noDetectadas.length === 0){
+        divNoDetectadas.innerHTML = "<p>Todas las especies fueron detectadas.</p>";
+    }
+
+    noDetectadas.forEach(e=>{
+        divNoDetectadas.innerHTML += `
+            <p class="no-detectada">✘ ${e.icono} ${e.nombre}</p>
+        `;
+    });
+}
+
+function dibujarGrafico(acumulacion, riquezaFinal){
+    const grafico = document.getElementById("grafico");
+    grafico.innerHTML = "";
+
+    const ancho = grafico.clientWidth;
+    const alto = grafico.clientHeight;
+    const maxEspecies = especies.length;
+
+    let puntos = acumulacion.map((valor, i)=>{
+        const x = (i / (acumulacion.length - 1)) * (ancho - 20);
+        const y = alto - (valor / maxEspecies) * (alto - 20);
+        return {x,y};
+    });
+
+    puntos.forEach((p,i)=>{
+        const punto = document.createElement("div");
+        punto.className = "punto";
+        punto.style.left = p.x + "px";
+        punto.style.top = p.y + "px";
+        grafico.appendChild(punto);
+
+        if(i > 0){
+            const anterior = puntos[i-1];
+            const dx = p.x - anterior.x;
+            const dy = p.y - anterior.y;
+            const largo = Math.sqrt(dx*dx + dy*dy);
+            const angulo = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            const linea = document.createElement("div");
+            linea.className = "linea";
+            linea.style.left = (anterior.x + 5) + "px";
+            linea.style.top = (anterior.y + 5) + "px";
+            linea.style.width = largo + "px";
+            linea.style.transform = `rotate(${angulo}deg)`;
+            grafico.appendChild(linea);
+        }
+    });
+
+    const etiqueta = document.createElement("div");
+    etiqueta.className = "eje-y";
+    etiqueta.innerHTML = `${maxEspecies} especies`;
+    grafico.appendChild(etiqueta);
+}
+
+function interpretar(riqueza, tasa){
+    let texto = "";
+
+    if(riqueza === 0){
+        texto = "No se detectaron especies. Esto puede ocurrir cuando el esfuerzo de muestreo es bajo o cuando la detectabilidad general es reducida.";
+    }
+    else if(riqueza < especies.length * 0.4){
+        texto = "La riqueza observada es baja. Es probable que el esfuerzo de muestreo sea insuficiente o que existan especies de baja detectabilidad no registradas.";
+    }
+    else if(riqueza < especies.length * 0.75){
+        texto = "La riqueza observada es moderada. El monitoreo permitió detectar varias especies, aunque todavía podrían existir especies presentes no registradas.";
+    }
+    else{
+        texto = "La riqueza observada es alta. El esfuerzo de muestreo permitió registrar la mayoría de las especies presentes en el área.";
+    }
+
+    texto += `<br><br>
+    <strong>Esfuerzo de muestreo:</strong> ${numCamaras} cámaras × ${numDias} días = ${numCamaras*numDias} cámaras-día.<br>
+    <strong>Tasa de captura:</strong> ${tasa.toFixed(2)} registros por cámara-día.`;
+
+    document.getElementById("textoInterpretacion").innerHTML = texto;
+}
+
+function reiniciar(){
+    numCamaras = 10;
+    numDias = 30;
+    nivelDetectabilidad = "media";
+
+    document.getElementById("camaras").innerText = numCamaras;
+    document.getElementById("dias").innerText = numDias;
+
+    ["baja","media","alta"].forEach(id=>{
+        document.getElementById(id).classList.remove("activo");
+    });
+    document.getElementById("media").classList.add("activo");
+
+    document.getElementById("especiesDetectadas").innerText = "0 / 8";
+    document.getElementById("riquezaObservada").innerText = "0";
+    document.getElementById("tasaCaptura").innerText = "0.00";
+    document.getElementById("esfuerzo").innerText = "300";
+    document.getElementById("listaDetectadas").innerHTML = "";
+    document.getElementById("listaNoDetectadas").innerHTML = "";
+    document.getElementById("grafico").innerHTML = "";
+
+    document.getElementById("textoInterpretacion").innerHTML = 
+    "Ejecuta el monitoreo para generar una simulación de detección de especies.";
+}
+
+crearTablaEspecies();
+actualizarEsfuerzo();
+</script>
+
+</body>
+</html>
