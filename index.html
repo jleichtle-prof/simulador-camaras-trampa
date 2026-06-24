@@ -400,7 +400,7 @@ la tasa de captura y la acumulación de especies detectadas.
 
 <div class="resultado-box">
 <div class="resultado-titulo">Especies detectadas</div>
-<div id="especiesDetectadas" class="valor">0 / 8</div>
+<div id="especiesDetectadas" class="valor">0 / 7</div>
 <div class="subtexto">Del total de especies presentes</div>
 </div>
 
@@ -479,14 +479,13 @@ let numDias = 30;
 let nivelDetectabilidad = "media";
 
 const especies = [
-    {nombre:"Zorro culpeo", icono:"🦊", base:0.35},
-    {nombre:"Chingue", icono:"🦨", base:0.30},
-    {nombre:"Liebre", icono:"🐇", base:0.35},
-    {nombre:"Guiña", icono:"🐱", base:0.10},
-    {nombre:"Degú", icono:"🐭", base:0.15},
-    {nombre:"Tucúquere", icono:"🦉", base:0.18},
-    {nombre:"Pudú", icono:"🦌", base:0.20},
-    {nombre:"Puma", icono:"🐆", base:0.05}
+    {nombre:"Zorro culpeo", icono:"🦊", base:0.85},
+    {nombre:"Liebre europea", icono:"🐇", base:0.80},
+    {nombre:"Chingue", icono:"🦨", base:0.60},
+    {nombre:"Pudú", icono:"🦌", base:0.45},
+    {nombre:"Ratón oliváceo", icono:"🐭", base:0.20},
+    {nombre:"Guiña", icono:"🐱", base:0.15},
+    {nombre:"Puma", icono:"🐆", base:0.08}
 ];
 
 function crearTablaEspecies(){
@@ -495,8 +494,19 @@ function crearTablaEspecies(){
 
     especies.forEach(e=>{
         let categoria = "Muy baja";
-        if(e.base >= 0.30) categoria = "Media";
-        else if(e.base >= 0.15) categoria = "Baja";
+
+        if(e.base >= 0.75){
+            categoria = "Muy alta";
+        }
+        else if(e.base >= 0.50){
+            categoria = "Alta";
+        }
+        else if(e.base >= 0.25){
+            categoria = "Media";
+        }
+        else if(e.base >= 0.10){
+            categoria = "Baja";
+        }
 
         const fila = document.createElement("tr");
         fila.innerHTML = `
@@ -547,8 +557,8 @@ function probabilidadDeteccion(especie, dias){
     const esfuerzoRelativo = Math.sqrt((numCamaras * dias) / 300);
     let p = especie.base * factorDetectabilidad() * esfuerzoRelativo;
 
-    if(p > 0.75){
-        p = 0.75;
+    if(p > 0.95){
+        p = 0.95;
     }
 
     return p;
@@ -682,7 +692,7 @@ function interpretar(riqueza, tasa){
     let texto = "";
 
     if(riqueza === 0){
-        texto = "No se detectaron especies. Esto puede ocurrir cuando el esfuerzo de muestreo es bajo o cuando la detectabilidad general es reducida.";
+        texto = "No se detectaron especies. Esto puede ocurrir cuando el esfuerzo de muestreo es muy bajo o cuando la detectabilidad general es reducida.";
     }
     else if(riqueza < especies.length * 0.4){
         texto = "La riqueza observada es baja. Es probable que el esfuerzo de muestreo sea insuficiente o que existan especies de baja detectabilidad no registradas, como puma o guiña.";
@@ -691,7 +701,7 @@ function interpretar(riqueza, tasa){
         texto = "La riqueza observada es moderada. El monitoreo permitió detectar varias especies, aunque todavía podrían existir especies presentes no registradas.";
     }
     else{
-        texto = "La riqueza observada es alta. El esfuerzo de muestreo permitió registrar la mayoría de las especies presentes en el área, aunque la detección nunca es perfecta.";
+        texto = "La riqueza observada es alta. El esfuerzo de muestreo permitió registrar la mayoría de las especies presentes en el área, especialmente aquellas de alta detectabilidad como zorro culpeo y liebre europea.";
     }
 
     texto += `<br><br>
@@ -714,7 +724,7 @@ function reiniciar(){
     });
     document.getElementById("media").classList.add("activo");
 
-    document.getElementById("especiesDetectadas").innerText = "0 / 8";
+    document.getElementById("especiesDetectadas").innerText = "0 / 7";
     document.getElementById("riquezaObservada").innerText = "0";
     document.getElementById("tasaCaptura").innerText = "0.00";
     document.getElementById("esfuerzo").innerText = "300";
