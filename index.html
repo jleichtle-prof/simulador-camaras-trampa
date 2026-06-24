@@ -180,46 +180,25 @@ td:first-child{
     margin-bottom:10px;
 }
 
+.detectada, .no-detectada {
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
 .detectada{
+    background: #e8f5e9;
     color:#1b5e20;
     font-weight:bold;
+    border-left: 5px solid #2e7d32;
 }
 
 .no-detectada{
+    background: #ffebee;
     color:#b71c1c;
     font-weight:bold;
-}
-
-.grafico{
-    height:280px;
-    border-left:2px solid #999;
-    border-bottom:2px solid #999;
-    position:relative;
-    margin:25px 10px 10px 35px;
-    background:linear-gradient(180deg,#ffffff,#f7faf7);
-}
-
-.punto{
-    width:10px;
-    height:10px;
-    background:#1b6e2b;
-    border-radius:50%;
-    position:absolute;
-}
-
-.linea{
-    height:3px;
-    background:#1b6e2b;
-    position:absolute;
-    transform-origin:left center;
-}
-
-.eje-y{
-    position:absolute;
-    left:-35px;
-    top:0;
-    font-size:14px;
-    color:#555;
+    border-left: 5px solid #c62828;
 }
 
 .eje-x{
@@ -413,7 +392,7 @@ la tasa de captura y la acumulación de especies detectadas.
 <div class="resultado-box">
 <div class="resultado-titulo">Tasa de captura</div>
 <div id="tasaCaptura" class="valor">0.00</div>
-<div class="subtexto">Registros por cámara-día</div>
+<div class="subtexto">Registros por 100 cámaras-día</div>
 </div>
 
 <div class="resultado-box">
@@ -436,7 +415,9 @@ la tasa de captura y la acumulación de especies detectadas.
 
 <div class="card">
 <h3>Curva de acumulación de especies</h3>
-<div class="grafico" id="grafico"></div>
+<div style="position: relative; background: white; border-radius: 12px; padding: 10px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+    <canvas id="graficoCanvas" height="250" style="width: 100%; height: 250px; display: block;"></canvas>
+</div>
 <div class="eje-x">Días de muestreo</div>
 </div>
 
@@ -544,8 +525,8 @@ function setDetectabilidad(nivel){
 }
 
 function factorDetectabilidad(){
-    if(nivelDetectabilidad === "baja") return 0.6;
-    if(nivelDetectabilidad === "alta") return 1.25;
+    if(nivelDetectabilidad === "baja") return 0.5;
+    if(nivelDetectabilidad === "alta") return 1.5;
     return 1.0;
 }
 
@@ -553,53 +534,52 @@ function actualizarEsfuerzo(){
     document.getElementById("esfuerzo").innerText = numCamaras * numDias;
 }
 
-function probabilidadDeteccion(especie, dias){
-    const esfuerzoRelativo = Math.sqrt((numCamaras * dias) / 300);
-    let p = especie.base * factorDetectabilidad() * esfuerzoRelativo;
-
-    if(p > 0.95){
-        p = 0.95;
-    }
-
-    return p;
-}
-
 function ejecutarMonitoreo(){
-    const detectadas = [];
-    const noDetectadas = [];
-    let registrosTotales = 0;
+    const detectadasMap = new Map();
     let acumulacion = [];
-    let detectadasAcumuladas = new Set();
+    let especiesDetectadasSet = new Set();
+    let registrosTotales = 0;
 
+    const fDet = factorDetectabilidad();
+
+    // Simulación acumulativa día a día
     for(let dia = 1; dia <= numDias; dia++){
+        especies.forEach(especie => {
+            // Probabilidad diaria individual por cámara ajustada
+            const pDiariaCamara = especie.base * fDet * 0.15; 
+            const pDiariaTotal = 1 - Math.pow(1 - pDiariaCamara, numCamaras);
 
-        especies.forEach(especie=>{
-            const p = probabilidadDeteccion(especie, dia);
-
-            if(Math.random() < p * 0.35){
-                detectadasAcumuladas.add(especie.nombre);
+            if(Math.random() < pDiariaTotal){
+                especiesDetectadasSet.add(especie.nombre);
+                
+                if(!detectadasMap.has(especie.nombre)){
+                    detectadasMap.set(especie.nombre, { ...especie, registros: 0 });
+                }
+                
+                // Simulación de ráfagas/eventos de captura independientes
+                const rafaga = Math.floor(Math.random() * 3) + 1;
+                detectadasMap.get(especie.nombre).registros += rafaga;
+                registrosTotales += rafaga;
             }
         });
-
-        acumulacion.push(detectadasAcumuladas.size);
+        acumulacion.push(especiesDetectadasSet.size);
     }
 
-    especies.forEach(especie=>{
-        const pFinal = probabilidadDeteccion(especie, numDias);
-        const detectada = Math.random() < pFinal;
+    const detectadas = [];
+    const noDetectadas = [];
 
-        if(detectada){
-            const registros = Math.max(1, Math.round(pFinal * numCamaras * numDias * (0.08 + Math.random() * 0.35)));
-            registrosTotales += registros;
-            detectadas.push({...especie, registros:registros});
-        }else{
+    especies.forEach(especie => {
+        if(detectadasMap.has(especie.nombre)){
+            detectadas.push(detectadasMap.get(especie.nombre));
+        } else {
             noDetectadas.push(especie);
         }
     });
 
     const riqueza = detectadas.length;
     const esfuerzo = numCamaras * numDias;
-    const tasa = esfuerzo > 0 ? registrosTotales / esfuerzo : 0;
+    // Tasa estandarizada por cada 100 cámaras-día
+    const tasa = esfuerzo > 0 ? (registrosTotales / esfuerzo) * 100 : 0;
 
     document.getElementById("especiesDetectadas").innerText = `${riqueza} / ${especies.length}`;
     document.getElementById("riquezaObservada").innerText = riqueza;
@@ -607,7 +587,7 @@ function ejecutarMonitoreo(){
     document.getElementById("esfuerzo").innerText = esfuerzo;
 
     actualizarListas(detectadas, noDetectadas);
-    dibujarGrafico(acumulacion);
+    dibujarGraficoCanvas(acumulacion);
     interpretar(riqueza, tasa);
 }
 
@@ -620,125 +600,21 @@ function actualizarListas(detectadas, noDetectadas){
 
     if(detectadas.length === 0){
         divDetectadas.innerHTML = "<p>Ninguna especie detectada.</p>";
+    } else {
+        detectadas.sort((a,b) => b.registros - a.registros);
+        detectadas.forEach(e=>{
+            divDetectadas.innerHTML += `
+                <div class="detectada">
+                    ✔ ${e.icono} ${e.nombre}<br>
+                    <span style="color:#555; font-weight:normal; font-size:14px;">${e.registros} fotografías independientes</span>
+                </div>
+            `;
+        });
     }
-
-    detectadas.forEach(e=>{
-        divDetectadas.innerHTML += `
-            <p class="detectada">✔ ${e.icono} ${e.nombre}<br>
-            <span style="color:#444; font-weight:normal;">${e.registros} registros</span></p>
-        `;
-    });
 
     if(noDetectadas.length === 0){
         divNoDetectadas.innerHTML = "<p>Todas las especies fueron detectadas.</p>";
-    }
-
-    noDetectadas.forEach(e=>{
-        divNoDetectadas.innerHTML += `
-            <p class="no-detectada">✘ ${e.icono} ${e.nombre}</p>
-        `;
-    });
-}
-
-function dibujarGrafico(acumulacion){
-    const grafico = document.getElementById("grafico");
-    grafico.innerHTML = "";
-
-    const ancho = grafico.clientWidth;
-    const alto = grafico.clientHeight;
-    const maxEspecies = especies.length;
-
-    if(acumulacion.length <= 1){
-        return;
-    }
-
-    let puntos = acumulacion.map((valor, i)=>{
-        const x = (i / (acumulacion.length - 1)) * (ancho - 20);
-        const y = alto - (valor / maxEspecies) * (alto - 20);
-        return {x,y};
-    });
-
-    puntos.forEach((p,i)=>{
-        const punto = document.createElement("div");
-        punto.className = "punto";
-        punto.style.left = p.x + "px";
-        punto.style.top = p.y + "px";
-        grafico.appendChild(punto);
-
-        if(i > 0){
-            const anterior = puntos[i-1];
-            const dx = p.x - anterior.x;
-            const dy = p.y - anterior.y;
-            const largo = Math.sqrt(dx*dx + dy*dy);
-            const angulo = Math.atan2(dy, dx) * 180 / Math.PI;
-
-            const linea = document.createElement("div");
-            linea.className = "linea";
-            linea.style.left = (anterior.x + 5) + "px";
-            linea.style.top = (anterior.y + 5) + "px";
-            linea.style.width = largo + "px";
-            linea.style.transform = `rotate(${angulo}deg)`;
-            grafico.appendChild(linea);
-        }
-    });
-
-    const etiqueta = document.createElement("div");
-    etiqueta.className = "eje-y";
-    etiqueta.innerHTML = `${maxEspecies} especies`;
-    grafico.appendChild(etiqueta);
-}
-
-function interpretar(riqueza, tasa){
-    let texto = "";
-
-    if(riqueza === 0){
-        texto = "No se detectaron especies. Esto puede ocurrir cuando el esfuerzo de muestreo es muy bajo o cuando la detectabilidad general es reducida.";
-    }
-    else if(riqueza < especies.length * 0.4){
-        texto = "La riqueza observada es baja. Es probable que el esfuerzo de muestreo sea insuficiente o que existan especies de baja detectabilidad no registradas, como puma o guiña.";
-    }
-    else if(riqueza < especies.length * 0.75){
-        texto = "La riqueza observada es moderada. El monitoreo permitió detectar varias especies, aunque todavía podrían existir especies presentes no registradas.";
-    }
-    else{
-        texto = "La riqueza observada es alta. El esfuerzo de muestreo permitió registrar la mayoría de las especies presentes en el área, especialmente aquellas de alta detectabilidad como zorro culpeo y liebre europea.";
-    }
-
-    texto += `<br><br>
-    <strong>Esfuerzo de muestreo:</strong> ${numCamaras} cámaras × ${numDias} días = ${numCamaras*numDias} cámaras-día.<br>
-    <strong>Tasa de captura:</strong> ${tasa.toFixed(2)} registros por cámara-día.`;
-
-    document.getElementById("textoInterpretacion").innerHTML = texto;
-}
-
-function reiniciar(){
-    numCamaras = 10;
-    numDias = 30;
-    nivelDetectabilidad = "media";
-
-    document.getElementById("camaras").innerText = numCamaras;
-    document.getElementById("dias").innerText = numDias;
-
-    ["baja","media","alta"].forEach(id=>{
-        document.getElementById(id).classList.remove("activo");
-    });
-    document.getElementById("media").classList.add("activo");
-
-    document.getElementById("especiesDetectadas").innerText = "0 / 7";
-    document.getElementById("riquezaObservada").innerText = "0";
-    document.getElementById("tasaCaptura").innerText = "0.00";
-    document.getElementById("esfuerzo").innerText = "300";
-    document.getElementById("listaDetectadas").innerHTML = "";
-    document.getElementById("listaNoDetectadas").innerHTML = "";
-    document.getElementById("grafico").innerHTML = "";
-
-    document.getElementById("textoInterpretacion").innerHTML = 
-    "Ejecuta el monitoreo para generar una simulación de detección de especies.";
-}
-
-crearTablaEspecies();
-actualizarEsfuerzo();
-</script>
-
-</body>
-</html>
+    } else {
+        noDetectadas.forEach(e=>{
+            divNoDetectadas.innerHTML += `
+                <div class="no-detectada">✘
