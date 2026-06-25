@@ -18,47 +18,22 @@ body{
 h1{
     text-align:center;
     color:#1b6e2b;
-    font-size:42px;
+    font-size:38px;
     margin-bottom:5px;
 }
  
 h2{
     text-align:center;
     color:#2e7d32;
-    font-size:25px;
+    font-size:22px;
     margin-top:5px;
-    margin-bottom:18px;
+    margin-bottom:25px;
 }
- 
-.info-superior{
-    max-width:1000px;
-    margin:0 auto 25px auto;
-}
- 
-.barra-info{
-    background:white;
-    border:1px solid #c8dcd0;
-    border-radius:16px;
-    padding:15px 20px;
-    text-align:center;
-    box-shadow:0 4px 10px rgba(0,0,0,0.05);
-}
- 
-.barra-info h4{
-    margin:0 0 4px 0;
-    color:#1b6e2b;
-    font-size:18px;
-}
- 
-.barra-info p{
-    margin:0;
-    color:#555;
-    font-size:16px;
-}
- 
+
+/* Contenedor principal con distribución limpia */
 .contenedor{
     display:grid;
-    grid-template-columns:300px minmax(520px,1.6fr) 390px;
+    grid-template-columns:310px minmax(520px,1.6fr) 390px;
     gap:20px;
     align-items:start;
 }
@@ -73,7 +48,14 @@ h2{
 .card h3{
     color:#1b6e2b;
     margin-top:0;
-    font-size:22px;
+    font-size:20px;
+}
+
+.card h4{
+    margin: 5px 0 15px 0;
+    color: #555;
+    font-weight: normal;
+    font-size: 15px;
 }
  
 .panel{
@@ -179,20 +161,20 @@ td:first-child{
 }
  
 /* MAPA CENTRAL */
- 
 .mapa-card{
     border-top:8px solid #2e7d32;
+    text-align:center;
 }
  
 .mapa-card h3{
-    text-align:center;
-    font-size:26px;
+    font-size:24px;
+    margin-bottom:2px;
 }
  
 .mapa-bosque{
     position:relative;
     width:100%;
-    height:650px;
+    height:600px;
     border-radius:18px;
     overflow:hidden;
     border:3px solid #9dbb8d;
@@ -301,7 +283,6 @@ td:first-child{
 }
  
 /* RESULTADOS */
- 
 .resultados{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -476,13 +457,6 @@ footer{
 <h1>📷 Simulador de cámaras trampa</h1>
 <h2>Monitoreo de fauna silvestre y detectabilidad imperfecta</h2>
  
-<div class="info-superior">
-    <div class="barra-info">
-        <h4>Área de estudio</h4>
-        <p>Parche de bosque esclerófilo de 25 hectáreas | 500 m × 500 m</p>
-    </div>
-</div>
- 
 <div class="contenedor">
  
 <div class="card panel">
@@ -531,7 +505,8 @@ footer{
 </div>
  
 <div class="card mapa-card">
-<h3>Mapa del bosque esclerófilo simulado (25 ha)</h3>
+<h3>Mapa del bosque esclerófilo simulado</h3>
+<h4>Parche mediterráneo de 25 hectáreas (500 m × 500 m)</h4>
  
 <div id="mapaBosque" class="mapa-bosque">
     <div class="sendero"></div>
@@ -629,7 +604,6 @@ Desarrollado por Jorge Leichtle © 2026
 </footer>
  
 <script>
-// Modificado: Variables cambian sus valores por defecto de carga
 let numCamaras = 1;
 let numDias = 7;
 let nivelDetectabilidad = "media";
@@ -937,7 +911,6 @@ function interpretar(riqueza,tasa){
 }
  
 function reiniciar(){
-    // Modificado: El botón de reinicio ahora devuelve los nuevos valores por defecto
     numCamaras = 1;
     numDias = 7;
     nivelDetectabilidad = "media";
@@ -953,7 +926,6 @@ function reiniciar(){
  
     document.getElementById("especiesDetectadas").innerText = "0 / 7";
     document.getElementById("tasaCaptura").innerText = "0.00";
-    // Modificado: Al reiniciar, el cuadro de esfuerzo vuelve a 7
     document.getElementById("esfuerzo").innerText = "7";
     document.getElementById("listaDetectadas").innerHTML = "";
     document.getElementById("listaNoDetectadas").innerHTML = "";
