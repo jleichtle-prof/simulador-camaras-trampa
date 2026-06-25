@@ -250,7 +250,7 @@ td:first-child{
     justify-content:center;
     color:white;
     font-size:19px;
-    z-index:3;
+    z-index:5;
     box-shadow:0 4px 10px rgba(0,0,0,0.35);
 }
 
@@ -263,14 +263,15 @@ td:first-child{
     border-radius:50%;
     background:rgba(102,187,106,0.25);
     border:2px dashed rgba(255,255,255,0.85);
-    z-index:2;
+    z-index:4;
 }
 
-.animal{
+.vegetacion{
     position:absolute;
-    font-size:24px;
-    z-index:4;
-    text-shadow:0 2px 5px rgba(0,0,0,0.45);
+    font-size:26px;
+    z-index:3;
+    text-shadow:0 2px 5px rgba(0,0,0,0.30);
+    opacity:0.95;
 }
 
 .escala{
@@ -608,7 +609,7 @@ Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas e
 <div class="leyenda-mapa">
 <div>📷 Cámara instalada</div>
 <div>◌ Área aproximada de cobertura</div>
-<div>▦ Cuadrícula de referencia</div>
+<div>🌳 Árboles, arbustos y matorral esclerófilo</div>
 </div>
 </div>
 
@@ -721,14 +722,27 @@ const posicionesCamaras = [
     [96,95],[50,95],[50,5],[75,50]
 ];
 
-const posicionesAnimales = [
-    {icono:"🦊", x:28, y:30},
-    {icono:"🐇", x:63, y:42},
-    {icono:"🦨", x:18, y:70},
-    {icono:"🦌", x:75, y:75},
-    {icono:"🐭", x:43, y:62},
-    {icono:"🐱", x:82, y:28},
-    {icono:"🐆", x:54, y:16}
+const vegetacion = [
+    {icono:"🌳", x:18, y:16}, {icono:"🌳", x:55, y:20}, {icono:"🌳", x:82, y:22},
+    {icono:"🌳", x:28, y:48}, {icono:"🌳", x:62, y:52}, {icono:"🌳", x:78, y:70},
+    {icono:"🌳", x:40, y:82}, {icono:"🌳", x:15, y:84},
+
+    {icono:"🌲", x:43, y:28}, {icono:"🌲", x:70, y:38}, {icono:"🌲", x:32, y:68},
+    {icono:"🌲", x:88, y:84},
+
+    {icono:"🌵", x:12, y:34}, {icono:"🌵", x:90, y:46}, {icono:"🌵", x:55, y:76},
+    {icono:"🌵", x:22, y:72},
+
+    {icono:"🌿", x:25, y:24}, {icono:"🌿", x:48, y:40}, {icono:"🌿", x:73, y:58},
+    {icono:"🌿", x:35, y:60}, {icono:"🌿", x:8, y:70}, {icono:"🌿", x:92, y:68},
+
+    {icono:"🌾", x:16, y:58}, {icono:"🌾", x:58, y:12}, {icono:"🌾", x:66, y:84},
+    {icono:"🌾", x:83, y:14},
+
+    {icono:"🌼", x:36, y:18}, {icono:"🌼", x:68, y:30}, {icono:"🌼", x:20, y:90},
+    {icono:"🌼", x:86, y:60},
+
+    {icono:"🪨", x:48, y:62}, {icono:"🪨", x:74, y:88}, {icono:"🪨", x:30, y:36}
 ];
 
 function categoriaDetectabilidad(base){
@@ -755,7 +769,16 @@ function crearTablaEspecies(){
 
 function renderMapa(){
     const mapa = document.getElementById("mapa");
-    mapa.querySelectorAll(".camara,.cobertura,.animal").forEach(el=>el.remove());
+    mapa.querySelectorAll(".camara,.cobertura,.vegetacion").forEach(el=>el.remove());
+
+    vegetacion.forEach(v=>{
+        const planta = document.createElement("div");
+        planta.className = "vegetacion";
+        planta.style.left = v.x + "%";
+        planta.style.top = v.y + "%";
+        planta.innerText = v.icono;
+        mapa.appendChild(planta);
+    });
 
     for(let i=0; i<numCamaras; i++){
         const pos = posicionesCamaras[i % posicionesCamaras.length];
@@ -773,15 +796,6 @@ function renderMapa(){
         camara.innerText = "📷";
         mapa.appendChild(camara);
     }
-
-    posicionesAnimales.forEach(a=>{
-        const animal = document.createElement("div");
-        animal.className = "animal";
-        animal.style.left = a.x + "%";
-        animal.style.top = a.y + "%";
-        animal.innerText = a.icono;
-        mapa.appendChild(animal);
-    });
 }
 
 function cambiarCamaras(valor){
