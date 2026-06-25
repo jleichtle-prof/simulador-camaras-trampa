@@ -178,8 +178,6 @@ td:first-child{
     background:#1b5e20;
 }
 
-/* MAPA CENTRAL */
-
 .mapa-card{
     border-top:8px solid #2e7d32;
 }
@@ -299,8 +297,6 @@ td:first-child{
     padding:8px;
     border-radius:10px;
 }
-
-/* RESULTADOS */
 
 .resultados{
     display:grid;
@@ -508,16 +504,6 @@ footer{
 <div class="subtexto">Rango: 1 a 365 días</div>
 </div>
 
-<div class="control">
-<label>👁️ Detectabilidad general</label>
-<div class="detectabilidad">
-<button id="baja" onclick="setDetectabilidad('baja')">Baja</button>
-<button id="media" class="activo" onclick="setDetectabilidad('media')">Media</button>
-<button id="alta" onclick="setDetectabilidad('alta')">Alta</button>
-</div>
-<div class="subtexto">Ajusta la probabilidad general de detección.</div>
-</div>
-
 <h3>Especies potencialmente presentes en el área</h3>
 
 <table>
@@ -526,6 +512,18 @@ footer{
 </thead>
 <tbody id="tablaEspecies"></tbody>
 </table>
+
+<div class="control">
+<label>👁️ Detectabilidad general</label>
+<div class="detectabilidad">
+<button id="baja" onclick="setDetectabilidad('baja')">Baja</button>
+<button id="media" class="activo" onclick="setDetectabilidad('media')">Media</button>
+<button id="alta" onclick="setDetectabilidad('alta')">Alta</button>
+</div>
+<div class="subtexto">
+Ajusta la detectabilidad general del muestreo. Simula condiciones ambientales, ubicación de cámaras y actividad de la fauna.
+</div>
+</div>
 
 <button class="btn-ejecutar" onclick="ejecutarMonitoreo()">▶ Ejecutar monitoreo</button>
 </div>
