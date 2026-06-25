@@ -9,9 +9,9 @@
 body{
     font-family: Arial, sans-serif;
     background: linear-gradient(180deg,#eef6ee,#f7faf7);
-    max-width:1500px;
+    max-width:1200px;
     margin:auto;
-    padding:20px;
+    padding:25px;
     color:#1a1a1a;
 }
 
@@ -27,55 +27,44 @@ h2{
     color:#2e7d32;
     font-size:25px;
     margin-top:5px;
+    margin-bottom:25px;
 }
 
-.descripcion{
-    text-align:center;
-    max-width:950px;
-    margin:15px auto 25px auto;
-    font-size:18px;
-    color:#444;
+/* Nuevas barras horizontales superiores */
+.info-superior {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 900px;
+    margin: 0 auto 35px auto;
 }
 
-.banner{
-    background:linear-gradient(90deg,#f3f8f3,#ffffff,#eef6ee);
-    border-radius:18px;
-    padding:18px;
-    margin-bottom:20px;
-    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+.barra-info {
+    background: white;
+    border: 1px solid #c8dcd0;
+    border-radius: 16px;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.area-info{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-    margin-bottom:20px;
+.barra-info h4 {
+    margin: 0 0 4px 0;
+    color: #1b6e2b;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.info-box{
-    background:white;
-    border-radius:16px;
-    padding:15px;
-    text-align:center;
-    box-shadow:0 4px 14px rgba(0,0,0,0.10);
-}
-
-.info-box h3{
-    color:#1b6e2b;
-    margin:0 0 8px 0;
-    font-size:20px;
-}
-
-.info-box .grande{
-    font-size:28px;
-    color:#1565c0;
-    font-weight:bold;
+.barra-info p {
+    margin: 0;
+    color: #555;
+    font-size: 16px;
 }
 
 .contenedor{
     display:grid;
-    grid-template-columns: 330px 1.2fr 1.1fr;
-    gap:20px;
+    grid-template-columns: 1fr 2fr;
+    gap:25px;
     align-items:start;
 }
 
@@ -89,7 +78,7 @@ h2{
 .card h3{
     color:#1b6e2b;
     margin-top:0;
-    font-size:22px;
+    font-size:24px;
 }
 
 .panel{
@@ -97,7 +86,7 @@ h2{
 }
 
 .control{
-    margin:18px 0;
+    margin:20px 0;
 }
 
 .control label{
@@ -150,21 +139,15 @@ h2{
     font-weight:bold;
 }
 
-.subtexto{
-    font-size:14px;
-    color:#444;
-    margin-top:8px;
-}
-
 table{
     width:100%;
     border-collapse:collapse;
-    font-size:14px;
+    font-size:15px;
 }
 
 th,td{
     border:1px solid #ccc;
-    padding:7px;
+    padding:8px;
     text-align:center;
 }
 
@@ -177,250 +160,103 @@ td:first-child{
     text-align:left;
 }
 
-.mapa-card{
-    border-top:8px solid #2e7d32;
-}
-
-.mapa-titulo{
-    text-align:center;
-    color:#1b6e2b;
-    font-size:24px;
-    font-weight:bold;
-    margin-bottom:12px;
-}
-
-.mapa{
-    position:relative;
-    height:560px;
-    border-radius:16px;
-    overflow:hidden;
-    border:2px solid #b7cbb7;
-    background:
-        radial-gradient(circle at 15% 20%, rgba(40,100,30,0.55) 0 8%, transparent 15%),
-        radial-gradient(circle at 70% 25%, rgba(55,120,40,0.50) 0 10%, transparent 17%),
-        radial-gradient(circle at 45% 55%, rgba(30,90,35,0.55) 0 11%, transparent 18%),
-        radial-gradient(circle at 85% 70%, rgba(60,130,45,0.50) 0 9%, transparent 16%),
-        radial-gradient(circle at 20% 80%, rgba(35,95,35,0.55) 0 10%, transparent 16%),
-        linear-gradient(135deg,#6f8f4d,#94ad67,#4f7a45);
-}
-
-.mapa::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background-image:
-        linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px);
-    background-size:56px 56px;
-}
-
-.sendero{
-    position:absolute;
-    width:760px;
-    height:70px;
-    background:rgba(164,125,72,0.38);
-    border-radius:50%;
-    transform:rotate(-25deg);
-    left:-80px;
-    top:260px;
-    filter:blur(1px);
-}
-
-.sendero2{
-    position:absolute;
-    width:620px;
-    height:55px;
-    background:rgba(164,125,72,0.28);
-    border-radius:50%;
-    transform:rotate(28deg);
-    left:120px;
-    top:210px;
-    filter:blur(1px);
-}
-
-.camara{
-    position:absolute;
-    width:34px;
-    height:34px;
-    border-radius:8px;
-    background:#1b6e2b;
-    border:3px solid white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    font-size:19px;
-    z-index:5;
-    box-shadow:0 4px 10px rgba(0,0,0,0.35);
-}
-
-.cobertura{
-    position:absolute;
-    width:120px;
-    height:120px;
-    margin-left:-43px;
-    margin-top:-43px;
-    border-radius:50%;
-    background:rgba(102,187,106,0.25);
-    border:2px dashed rgba(255,255,255,0.85);
-    z-index:4;
-}
-
-.vegetacion{
-    position:absolute;
-    font-size:26px;
-    z-index:3;
-    text-shadow:0 2px 5px rgba(0,0,0,0.30);
-    opacity:0.95;
-}
-
-.escala{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:14px;
-    color:#444;
-    margin-top:8px;
-}
-
-.leyenda-mapa{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:12px;
-    font-size:14px;
-}
-
-.leyenda-mapa div{
-    background:#f7faf7;
-    border:1px solid #d9e8d9;
-    padding:8px;
-    border-radius:10px;
-}
-
 .resultados{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-    margin-bottom:15px;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
 }
 
 .resultado-box{
     background:white;
     border-radius:16px;
-    padding:15px;
+    padding:18px;
     text-align:center;
     box-shadow:0 4px 14px rgba(0,0,0,0.12);
 }
 
 .resultado-titulo{
-    font-size:15px;
-    color:#333;
+    font-size:14px;
+    color:#555;
+    font-weight: bold;
 }
 
 .valor{
-    font-size:38px;
+    font-size:36px;
     color:#1565c0;
     font-weight:bold;
-    margin-top:6px;
+    margin-top:8px;
 }
 
-.valor-verde{
-    color:#1b6e2b;
+.subtexto{
+    font-size:13px;
+    color:#666;
+    margin-top:8px;
 }
 
-.valor-naranja{
-    color:#b86b00;
-}
-
-.grafico-card{
-    margin-top:15px;
-}
-
-canvas{
-    width:100%;
-    height:300px;
-    display:block;
-}
-
-.lista-contenedor{
+.zona-resultados{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-    margin-top:15px;
+    grid-template-columns:1fr 1.5fr;
+    gap:20px;
 }
 
-.detectada, .no-detectada {
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:8px;
-    font-size:15px;
+.lista h4{
+    color:#1b6e2b;
+    margin-bottom:10px;
 }
 
 .detectada{
-    background:#e8f5e9;
     color:#1b5e20;
     font-weight:bold;
-    border-left:5px solid #2e7d32;
+    background: #e8f5e9;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
 }
 
 .no-detectada{
-    background:#ffebee;
     color:#b71c1c;
     font-weight:bold;
-    border-left:5px solid #c62828;
+    background: #ffebee;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.eje-x{
+    text-align:center;
+    margin-top:10px;
+    font-size:15px;
+    color:#555;
 }
 
 .interpretacion{
-    margin-top:15px;
+    margin-top:25px;
     background:#ffffff;
     border-left:8px solid #1565c0;
     border-radius:16px;
-    padding:18px;
+    padding:20px;
     box-shadow:0 4px 14px rgba(0,0,0,0.12);
-    font-size:16px;
+    font-size:18px;
     line-height:1.5;
 }
 
 .aprendizaje{
-    margin-top:15px;
+    margin-top:25px;
     background:#f8fbff;
     border-radius:16px;
-    padding:18px;
+    padding:20px;
     border:2px solid #cfe3ff;
-    font-size:15px;
+    font-size:17px;
     line-height:1.5;
 }
-
-.leyenda-detectabilidad{
-    margin-top:15px;
-    background:#fffdf7;
-    border:1px solid #f0dca7;
-    border-radius:14px;
-    padding:12px;
-    font-size:14px;
-}
-
-.punto{
-    display:inline-block;
-    width:13px;
-    height:13px;
-    border-radius:50%;
-    margin-right:6px;
-}
-
-.muy-alta{background:#0b6b1a;}
-.alta{background:#4b9f24;}
-.media{background:#f1c40f;}
-.baja{background:#e67e22;}
-.muy-baja{background:#c0392b;}
 
 .botones{
     display:flex;
     justify-content:center;
     gap:15px;
     flex-wrap:wrap;
-    margin-top:25px;
+    margin-top:30px;
 }
 
 .btn-reset, .btn-ejecutar{
@@ -468,38 +304,34 @@ canvas{
 
 footer{
     text-align:center;
-    margin-top:30px;
+    margin-top:50px;
     color:#666;
     font-size:15px;
     border-top:1px solid #ddd;
     padding-top:18px;
 }
 
-@media(max-width:1200px){
+@media(max-width:1000px){
     .contenedor{
         grid-template-columns:1fr;
     }
 
-    .area-info{
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:700px){
     .resultados{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr 1fr;
     }
 
-    .lista-contenedor{
+    .zona-resultados{
         grid-template-columns:1fr;
     }
 
     h1{
         font-size:32px;
     }
+}
 
-    .mapa{
-        height:420px;
+@media(max-width:600px){
+    .resultados{
+        grid-template-columns:1fr;
     }
 }
 </style>
@@ -507,33 +339,18 @@ footer{
 
 <body>
 
-<div class="banner">
 <h1>📷 Simulador de cámaras trampa</h1>
 <h2>Monitoreo de fauna silvestre y detectabilidad imperfecta</h2>
 
-<p class="descripcion">
-Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas el número de cámaras, estas se distribuyen visualmente en el mapa y cambia la probabilidad de detectar especies.
-</p>
-</div>
-
-<div class="area-info">
-<div class="info-box">
-<h3>Área de estudio</h3>
-<div class="grande">25 ha</div>
-<div>500 m × 500 m</div>
-</div>
-
-<div class="info-box">
-<h3>Hábitat</h3>
-<div class="grande">Bosque esclerófilo</div>
-<div>Parche mediterráneo simulado</div>
-</div>
-
-<div class="info-box">
-<h3>Riqueza real</h3>
-<div class="grande">7 especies</div>
-<div>Presentes en el área</div>
-</div>
+<div class="info-superior">
+    <div class="barra-info">
+        <h4>Area de estudio</h4>
+        <p>Parque de bosque esclerófilo de 25 hectáreas</p>
+    </div>
+    <div class="barra-info">
+        <h4>Riqueza potencial de especies</h4>
+        <p>Según literatura, 7 especies</p>
+    </div>
 </div>
 
 <div class="contenedor">
@@ -542,7 +359,7 @@ Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas e
 <h3>Configuración del monitoreo</h3>
 
 <div class="control">
-<label>📷 Número de cámaras trampa</label>
+<label>📷 Número de cámaras</label>
 <div class="control-box">
 <button onclick="cambiarCamaras(-1)">−</button>
 <span id="camaras">10</span>
@@ -580,37 +397,8 @@ Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas e
 <tbody id="tablaEspecies"></tbody>
 </table>
 
-<div class="leyenda-detectabilidad">
-<strong>Leyenda:</strong><br>
-<span class="punto muy-alta"></span>Muy alta ≥ 0,75<br>
-<span class="punto alta"></span>Alta 0,50–0,74<br>
-<span class="punto media"></span>Media 0,25–0,49<br>
-<span class="punto baja"></span>Baja 0,10–0,24<br>
-<span class="punto muy-baja"></span>Muy baja &lt; 0,10
-</div>
-
 <button class="btn-ejecutar" onclick="ejecutarMonitoreo()">▶ Ejecutar monitoreo</button>
 
-</div>
-
-<div class="card mapa-card">
-<div class="mapa-titulo">Mapa del bosque esclerófilo simulado (25 ha)</div>
-
-<div class="mapa" id="mapa">
-<div class="sendero"></div>
-<div class="sendero2"></div>
-</div>
-
-<div class="escala">
-<span>Escala: 1 cuadrícula = 50 m</span>
-<span>Área total: 500 m × 500 m</span>
-</div>
-
-<div class="leyenda-mapa">
-<div>📷 Cámara instalada</div>
-<div>◌ Área aproximada de cobertura</div>
-<div>🌳 Árboles, arbustos y matorral esclerófilo</div>
-</div>
 </div>
 
 <div>
@@ -618,8 +406,8 @@ Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas e
 <div class="resultados">
 
 <div class="resultado-box">
-<div class="resultado-titulo">Riqueza real</div>
-<div class="valor valor-verde">7</div>
+<div class="resultado-titulo">Riqueza teórica</div>
+<div class="valor" style="color: #455a64;">7</div>
 <div class="subtexto">Especies presentes</div>
 </div>
 
@@ -631,7 +419,7 @@ Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas e
 
 <div class="resultado-box">
 <div class="resultado-titulo">Tasa de captura</div>
-<div id="tasaCaptura" class="valor valor-naranja">0.00</div>
+<div id="tasaCaptura" class="valor">0.00</div>
 <div class="subtexto">Registros / 100 cámaras-día</div>
 </div>
 
@@ -643,21 +431,24 @@ Simula un monitoreo en un parche de bosque esclerófilo. A medida que aumentas e
 
 </div>
 
-<div class="card grafico-card">
-<h3>Curva de acumulación de especies detectadas</h3>
-<canvas id="graficoCanvas" height="300"></canvas>
-</div>
+<div class="zona-resultados">
 
-<div class="lista-contenedor">
-<div class="card">
+<div class="card lista">
 <h3>Especies detectadas</h3>
 <div id="listaDetectadas"></div>
-</div>
 
-<div class="card">
 <h3>Especies no detectadas</h3>
 <div id="listaNoDetectadas"></div>
 </div>
+
+<div class="card">
+<h3>Curva de acumulación de especies</h3>
+<div style="position: relative; background: white; border-radius: 12px; padding: 10px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+    <canvas id="graficoCanvas" height="250" style="width: 100%; height: 250px; display: block;"></canvas>
+</div>
+<div class="eje-x">Días de muestreo</div>
+</div>
+
 </div>
 
 <div class="interpretacion">
@@ -670,9 +461,9 @@ Ejecuta el monitoreo para generar una simulación de detección de especies.
 <div class="aprendizaje">
 <strong>¿Qué aprendemos?</strong><br><br>
 ✔ A mayor esfuerzo de muestreo, aumenta la probabilidad de detectar especies.<br>
-✔ Más cámaras mejoran la cobertura espacial del bosque.<br>
+✔ Cada especie posee una detectabilidad diferente.<br>
 ✔ La riqueza observada no siempre representa la riqueza real del área.<br>
-✔ Algunas especies pueden estar presentes y no ser detectadas.
+✔ Las cámaras trampa requieren planificación y esfuerzo de muestreo adecuado.
 </div>
 
 </div>
@@ -706,113 +497,47 @@ const especies = [
     {nombre:"Puma", icono:"🐆", base:0.08}
 ];
 
-const posicionesCamaras = [
-    [12,18],[38,12],[68,18],[88,15],
-    [22,35],[50,32],[76,37],
-    [10,55],[35,55],[60,55],[86,57],
-    [18,75],[45,73],[72,77],[92,78],
-    [30,88],[55,88],[80,90],
-    [8,32],[92,34],[15,92],[40,18],
-    [63,78],[74,12],[48,48],[28,66],
-    [83,47],[57,22],[6,82],[96,62],
-    [22,12],[44,38],[66,63],[88,86],
-    [12,68],[36,84],[52,12],[70,32],
-    [90,24],[18,46],[41,67],[64,86],
-    [82,68],[6,10],[96,10],[6,95],
-    [96,95],[50,95],[50,5],[75,50]
-];
-
-const vegetacion = [
-    {icono:"🌳", x:18, y:16}, {icono:"🌳", x:55, y:20}, {icono:"🌳", x:82, y:22},
-    {icono:"🌳", x:28, y:48}, {icono:"🌳", x:62, y:52}, {icono:"🌳", x:78, y:70},
-    {icono:"🌳", x:40, y:82}, {icono:"🌳", x:15, y:84},
-
-    {icono:"🌲", x:43, y:28}, {icono:"🌲", x:70, y:38}, {icono:"🌲", x:32, y:68},
-    {icono:"🌲", x:88, y:84},
-
-    {icono:"🌵", x:12, y:34}, {icono:"🌵", x:90, y:46}, {icono:"🌵", x:55, y:76},
-    {icono:"🌵", x:22, y:72},
-
-    {icono:"🌿", x:25, y:24}, {icono:"🌿", x:48, y:40}, {icono:"🌿", x:73, y:58},
-    {icono:"🌿", x:35, y:60}, {icono:"🌿", x:8, y:70}, {icono:"🌿", x:92, y:68},
-
-    {icono:"🌾", x:16, y:58}, {icono:"🌾", x:58, y:12}, {icono:"🌾", x:66, y:84},
-    {icono:"🌾", x:83, y:14},
-
-    {icono:"🌼", x:36, y:18}, {icono:"🌼", x:68, y:30}, {icono:"🌼", x:20, y:90},
-    {icono:"🌼", x:86, y:60},
-
-    {icono:"🪨", x:48, y:62}, {icono:"🪨", x:74, y:88}, {icono:"🪨", x:30, y:36}
-];
-
-function categoriaDetectabilidad(base){
-    if(base >= 0.75) return "Muy alta";
-    if(base >= 0.50) return "Alta";
-    if(base >= 0.25) return "Media";
-    if(base >= 0.10) return "Baja";
-    return "Muy baja";
-}
-
 function crearTablaEspecies(){
     const tbody = document.getElementById("tablaEspecies");
     tbody.innerHTML = "";
 
     especies.forEach(e=>{
+        let categoria = "Muy baja";
+
+        if(e.base >= 0.75){
+            categoria = "Muy alta";
+        }
+        else if(e.base >= 0.50){
+            categoria = "Alta";
+        }
+        else if(e.base >= 0.25){
+            categoria = "Media";
+        }
+        else if(e.base >= 0.10){
+            categoria = "Baja";
+        }
+
         const fila = document.createElement("tr");
         fila.innerHTML = `
             <td><span style="font-size:22px; margin-right:8px;">${e.icono}</span>${e.nombre}</td>
-            <td>${categoriaDetectabilidad(e.base)} (${e.base.toFixed(2)})</td>
+            <td>${categoria} (${e.base.toFixed(2)})</td>
         `;
         tbody.appendChild(fila);
     });
-}
-
-function renderMapa(){
-    const mapa = document.getElementById("mapa");
-    mapa.querySelectorAll(".camara,.cobertura,.vegetacion").forEach(el=>el.remove());
-
-    vegetacion.forEach(v=>{
-        const planta = document.createElement("div");
-        planta.className = "vegetacion";
-        planta.style.left = v.x + "%";
-        planta.style.top = v.y + "%";
-        planta.innerText = v.icono;
-        mapa.appendChild(planta);
-    });
-
-    for(let i=0; i<numCamaras; i++){
-        const pos = posicionesCamaras[i % posicionesCamaras.length];
-
-        const cobertura = document.createElement("div");
-        cobertura.className = "cobertura";
-        cobertura.style.left = pos[0] + "%";
-        cobertura.style.top = pos[1] + "%";
-        mapa.appendChild(cobertura);
-
-        const camara = document.createElement("div");
-        camara.className = "camara";
-        camara.style.left = `calc(${pos[0]}% - 17px)`;
-        camara.style.top = `calc(${pos[1]}% - 17px)`;
-        camara.innerText = "📷";
-        mapa.appendChild(camara);
-    }
 }
 
 function cambiarCamaras(valor){
     numCamaras += valor;
     if(numCamaras < 1) numCamaras = 1;
     if(numCamaras > 50) numCamaras = 50;
-
     document.getElementById("camaras").innerText = numCamaras;
     actualizarEsfuerzo();
-    renderMapa();
 }
 
 function cambiarDias(valor){
     numDias += valor;
     if(numDias < 1) numDias = 1;
     if(numDias > 365) numDias = 365;
-
     document.getElementById("dias").innerText = numDias;
     actualizarEsfuerzo();
 }
@@ -828,8 +553,8 @@ function setDetectabilidad(nivel){
 }
 
 function factorDetectabilidad(){
-    if(nivelDetectabilidad === "baja") return 0.6;
-    if(nivelDetectabilidad === "alta") return 1.3;
+    if(nivelDetectabilidad === "baja") return 0.5;
+    if(nivelDetectabilidad === "alta") return 1.5;
     return 1.0;
 }
 
@@ -842,36 +567,37 @@ function ejecutarMonitoreo(){
     let acumulacion = [];
     let especiesDetectadasSet = new Set();
     let registrosTotales = 0;
+
     const fDet = factorDetectabilidad();
 
+    // Simulación acumulativa día a día basada en esfuerzo
     for(let dia = 1; dia <= numDias; dia++){
-        especies.forEach(especie=>{
-            const pDiariaCamara = especie.base * fDet * 0.13;
+        especies.forEach(especie => {
+            const pDiariaCamara = especie.base * fDet * 0.15; 
             const pDiariaTotal = 1 - Math.pow(1 - pDiariaCamara, numCamaras);
 
             if(Math.random() < pDiariaTotal){
                 especiesDetectadasSet.add(especie.nombre);
-
+                
                 if(!detectadasMap.has(especie.nombre)){
-                    detectadasMap.set(especie.nombre, {...especie, registros:0});
+                    detectadasMap.set(especie.nombre, { ...especie, registros: 0 });
                 }
-
-                const registros = Math.floor(Math.random()*3)+1;
-                detectadasMap.get(especie.nombre).registros += registros;
-                registrosTotales += registros;
+                
+                const rafaga = Math.floor(Math.random() * 3) + 1;
+                detectadasMap.get(especie.nombre).registros += rafaga;
+                registrosTotales += rafaga;
             }
         });
-
         acumulacion.push(especiesDetectadasSet.size);
     }
 
     const detectadas = [];
     const noDetectadas = [];
 
-    especies.forEach(especie=>{
+    especies.forEach(especie => {
         if(detectadasMap.has(especie.nombre)){
             detectadas.push(detectadasMap.get(especie.nombre));
-        }else{
+        } else {
             noDetectadas.push(especie);
         }
     });
@@ -885,8 +611,8 @@ function ejecutarMonitoreo(){
     document.getElementById("esfuerzo").innerText = esfuerzo;
 
     actualizarListas(detectadas, noDetectadas);
-    dibujarGrafico(acumulacion);
-    interpretar(riqueza, tasa, noDetectadas);
+    dibujarGraficoCanvas(acumulacion);
+    interpretar(riqueza, tasa);
 }
 
 function actualizarListas(detectadas, noDetectadas){
@@ -898,133 +624,115 @@ function actualizarListas(detectadas, noDetectadas){
 
     if(detectadas.length === 0){
         divDetectadas.innerHTML = "<p>Ninguna especie detectada.</p>";
-    }else{
-        detectadas.sort((a,b)=>b.registros-a.registros);
+    } else {
+        detectadas.sort((a,b) => b.registros - a.registros);
         detectadas.forEach(e=>{
             divDetectadas.innerHTML += `
-                <div class="detectada">
-                    ✔ ${e.icono} ${e.nombre}<br>
-                    <span style="color:#555; font-weight:normal; font-size:14px;">
-                    ${e.registros} registros independientes</span>
-                </div>
+                <div class="detectada">✔ ${e.icono} ${e.nombre}<br>
+                <span style="color:#555; font-weight:normal; font-size:14px;">${e.registros} fotografías</span></div>
             `;
         });
     }
 
     if(noDetectadas.length === 0){
         divNoDetectadas.innerHTML = "<p>Todas las especies fueron detectadas.</p>";
-    }else{
+    } else {
         noDetectadas.forEach(e=>{
             divNoDetectadas.innerHTML += `
-                <div class="no-detectada">
-                    ✘ ${e.icono} ${e.nombre}<br>
-                    <span style="color:#555; font-weight:normal; font-size:14px;">
-                    No detectada</span>
-                </div>
+                <div class="no-detectada">✘ ${e.icono} ${e.nombre}</div>
             `;
         });
     }
 }
 
-function dibujarGrafico(acumulacion){
+function dibujarGraficoCanvas(acumulacion){
     const canvas = document.getElementById("graficoCanvas");
     const ctx = canvas.getContext("2d");
+    
+    const ancho = canvas.offsetWidth;
+    const alto = canvas.offsetHeight;
+    canvas.width = ancho;
+    canvas.height = alto;
 
-    const ratio = window.devicePixelRatio || 1;
-    const anchoCSS = canvas.clientWidth;
-    const altoCSS = canvas.clientHeight;
+    ctx.clearRect(0, 0, ancho, alto);
 
-    canvas.width = anchoCSS * ratio;
-    canvas.height = altoCSS * ratio;
-    ctx.setTransform(ratio,0,0,ratio,0,0);
+    const paddingLeft = 40;
+    const paddingBottom = 30;
+    const paddingTop = 20;
+    const paddingRight = 20;
 
-    ctx.clearRect(0,0,anchoCSS,altoCSS);
+    const graphAncho = ancho - paddingLeft - paddingRight;
+    const graphAlto = alto - paddingTop - paddingBottom;
+    const maxEspecies = especies.length;
 
-    const margenIzq = 45;
-    const margenDer = 20;
-    const margenSup = 20;
-    const margenInf = 40;
-
-    const ancho = anchoCSS - margenIzq - margenDer;
-    const alto = altoCSS - margenSup - margenInf;
-    const maxY = especies.length;
-
-    ctx.strokeStyle = "#ddd";
-    ctx.lineWidth = 1;
-    ctx.font = "13px Arial";
-    ctx.fillStyle = "#444";
-
-    for(let i=0; i<=maxY; i++){
-        const y = margenSup + alto - (i/maxY)*alto;
-        ctx.beginPath();
-        ctx.moveTo(margenIzq,y);
-        ctx.lineTo(margenIzq+ancho,y);
-        ctx.stroke();
-        ctx.fillText(i,15,y+4);
-    }
-
-    ctx.strokeStyle = "#333";
+    // Ejes
+    ctx.strokeStyle = "#999";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(margenIzq,margenSup);
-    ctx.lineTo(margenIzq,margenSup+alto);
-    ctx.lineTo(margenIzq+ancho,margenSup+alto);
+    ctx.moveTo(paddingLeft, paddingTop);
+    ctx.lineTo(paddingLeft, alto - paddingBottom);
+    ctx.lineTo(ancho - paddingRight, alto - paddingBottom);
     ctx.stroke();
 
-    if(acumulacion.length > 1){
-        ctx.strokeStyle = "#1b6e2b";
-        ctx.lineWidth = 3;
+    // Grid horizontal
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.lineWidth = 1;
+    for(let i = 1; i <= maxEspecies; i++) {
+        let y = (alto - paddingBottom) - (i / maxEspecies) * graphAlto;
         ctx.beginPath();
-
-        acumulacion.forEach((valor,i)=>{
-            const x = margenIzq + (i/(acumulacion.length-1))*ancho;
-            const y = margenSup + alto - (valor/maxY)*alto;
-
-            if(i === 0) ctx.moveTo(x,y);
-            else ctx.lineTo(x,y);
-        });
-
+        ctx.moveTo(paddingLeft, y);
+        ctx.lineTo(ancho - paddingRight, y);
         ctx.stroke();
-
-        ctx.fillStyle = "#1b6e2b";
-        acumulacion.forEach((valor,i)=>{
-            const x = margenIzq + (i/(acumulacion.length-1))*ancho;
-            const y = margenSup + alto - (valor/maxY)*alto;
-            ctx.beginPath();
-            ctx.arc(x,y,4,0,Math.PI*2);
-            ctx.fill();
-        });
+        
+        ctx.fillStyle = "#555";
+        ctx.font = "12px Arial";
+        ctx.fillText(i, paddingLeft - 20, y + 4);
     }
 
-    ctx.fillStyle = "#444";
-    ctx.fillText("Días de muestreo", margenIzq + ancho/2 - 45, altoCSS - 8);
-    ctx.save();
-    ctx.translate(12, margenSup + alto/2 + 60);
-    ctx.rotate(-Math.PI/2);
-    ctx.fillText("Especies acumuladas", 0, 0);
-    ctx.restore();
+    if(acumulacion.length === 0) return;
+
+    // Curva acumulativa
+    ctx.strokeStyle = "#1b6e2b";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    acumulacion.forEach((val, i) => {
+        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
+        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
+        
+        if(i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Nodos de control visual (extremos)
+    let puntosInteres = [0, acumulacion.length - 1];
+    puntosInteres.forEach(i => {
+        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
+        let y = (alto - paddingBottom) - (acumulacion[i] / maxEspecies) * graphAlto;
+        
+        ctx.fillStyle = "#1b6e2b";
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+    });
 }
 
-function interpretar(riqueza, tasa, noDetectadas){
+function interpretar(riqueza, tasa){
     let texto = "";
-
     if(riqueza === 0){
-        texto = "No se detectaron especies. Esto puede ocurrir si el esfuerzo de muestreo es muy bajo o si la detectabilidad general es reducida.";
-    }
-    else if(riqueza < especies.length){
-        texto = `La riqueza observada fue de <strong>${riqueza}</strong> especies, mientras que la riqueza real del área es de <strong>${especies.length}</strong> especies. Esto demuestra que la ausencia de detección no implica necesariamente ausencia de la especie.`;
-    }
-    else{
-        texto = `Se detectaron las <strong>${especies.length}</strong> especies presentes en el área. Esto sugiere que el esfuerzo de muestreo fue suficiente para registrar la riqueza simulada.`;
-    }
-
-    if(noDetectadas.length > 0){
-        texto += `<br><br><strong>Especies no detectadas:</strong> ${noDetectadas.map(e=>e.nombre).join(", ")}.`;
+        texto = "<strong>Análisis:</strong> No se detectaron especies. Esto puede ocurrir cuando el esfuerzo de muestreo es críticamente bajo o las condiciones ambientales reducen a cero la detectabilidad.";
+    } else if(riqueza < especies.length * 0.4){
+        texto = "<strong>Análisis:</strong> La riqueza observada es baja. El muestreo actual subestima severamente la biodiversidad real. Especies elusivas o de baja densidad (como el puma o la guiña) pasaron completamente desapercibidas.";
+    } else if(riqueza < especies.length * 0.8){
+        texto = "<strong>Análisis:</strong> Riqueza moderada. Lograste capturar los sospechosos comunes (zorros, liebres), pero tu esfuerzo aún deja fuera a los carnívoros más crípticos y sensibles.";
+    } else {
+        texto = "<strong>Análisis:</strong> ¡Excelente monitoreo! Tu inventario está casi completo. Lograste un esfuerzo lo suficientemente robusto para romper la barrera de la detectabilidad imperfecta de las especies raras.";
     }
 
     texto += `<br><br>
-    <strong>Esfuerzo de muestreo:</strong> ${numCamaras} cámaras × ${numDias} días = ${numCamaras*numDias} cámaras-día.<br>
-    <strong>Tasa de captura:</strong> ${tasa.toFixed(2)} registros por cada 100 cámaras-día.`;
+    📊 <strong>Esfuerzo neto:</strong> ${numCamaras} cámaras × ${numDias} días = <u>${numCamaras*numDias} cámaras-día</u>.<br>
+    📈 <strong>Tasa de encuentro:</strong> ${tasa.toFixed(2)} fotos registradas por cada 100 cámaras-día.`;
 
     document.getElementById("textoInterpretacion").innerHTML = texto;
 }
@@ -1040,7 +748,6 @@ function reiniciar(){
     ["baja","media","alta"].forEach(id=>{
         document.getElementById(id).classList.remove("activo");
     });
-
     document.getElementById("media").classList.add("activo");
 
     document.getElementById("especiesDetectadas").innerText = "0 / 7";
@@ -1048,17 +755,19 @@ function reiniciar(){
     document.getElementById("esfuerzo").innerText = "300";
     document.getElementById("listaDetectadas").innerHTML = "";
     document.getElementById("listaNoDetectadas").innerHTML = "";
-    document.getElementById("textoInterpretacion").innerHTML = "Ejecuta el monitoreo para generar una simulación de detección de especies.";
+    
+    const canvas = document.getElementById("graficoCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    dibujarGrafico([]);
-    actualizarEsfuerzo();
-    renderMapa();
+    document.getElementById("textoInterpretacion").innerHTML = 
+    "Ejecuta el monitoreo para generar una simulación de detección de especies.";
 }
 
-crearTablaEspecies();
-actualizarEsfuerzo();
-renderMapa();
-dibujarGrafico([]);
+window.onload = function() {
+    crearTablaEspecies();
+    actualizarEsfuerzo();
+}
 </script>
 
 </body>
