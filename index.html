@@ -550,7 +550,7 @@ footer{
 <div class="resultado-box">
 <div class="resultado-titulo">Tasa de captura</div>
 <div id="tasaCaptura" class="valor valor-naranja">0.00</div>
-<div class="subtexto">Registros / 100 cámaras-día</div>
+<div class="subtexto">Esfuerzo: <span id="esfuerzo">7</span> cámaras-día</div>
 </div>
  
 <div class="resultado-box">
@@ -712,6 +712,7 @@ function cambiarCamaras(valor){
     if(numCamaras > 50) numCamaras = 50;
  
     document.getElementById("camaras").innerText = numCamaras;
+    actualizarEsfuerzo();
     renderMapa();
 }
  
@@ -721,6 +722,7 @@ function cambiarDias(valor){
     if(numDias > 365) numDias = 365;
  
     document.getElementById("dias").innerText = numDias;
+    actualizarEsfuerzo();
 }
  
 function setDetectabilidad(nivel){
@@ -737,6 +739,13 @@ function factorDetectabilidad(){
     if(nivelDetectabilidad === "baja") return 0.5;
     if(nivelDetectabilidad === "alta") return 1.5;
     return 1.0;
+}
+
+function actualizarEsfuerzo(){
+    const elemento = document.getElementById("esfuerzo");
+    if(elemento) {
+        elemento.innerText = numCamaras * numDias;
+    }
 }
  
 function ejecutarMonitoreo(){
@@ -794,8 +803,7 @@ function ejecutarMonitoreo(){
     }
  
     document.getElementById("especiesDetectadas").innerText = `${riqueza} / ${especies.length}`;
-    document.getElementById("tasaCaptura").innerText = tasa.toFixed(2);
-    document.getElementById("esfuerzo").innerText = esfuerzo;
+    document.getElementById("tasaCaptura").innerHTML = `${tasa.toFixed(2)} <br><span style="font-size:13px; color:#666; font-weight:normal;">Esfuerzo: <span id="esfuerzo">${esfuerzo}</span> cám-día</span>`;
     document.getElementById("indicesBiodiversidad").innerHTML = `H': ${shannon.toFixed(2)}<br>D: ${simpson.toFixed(2)}`;
  
     actualizarListas(detectadas, noDetectadas);
@@ -837,7 +845,6 @@ function dibujarGraficoCanvas(acumulacion){
     const canvas = document.getElementById("graficoCanvas");
     const ctx = canvas.getContext("2d");
  
-    // Forzamos asignación de dimensiones según el espacio real disponible
     const ancho = canvas.clientWidth || 350;
     const alto = canvas.clientHeight || 250;
     canvas.width = ancho;
@@ -940,8 +947,7 @@ function reiniciar(){
     document.getElementById("media").classList.add("activo");
  
     document.getElementById("especiesDetectadas").innerText = "0 / 7";
-    document.getElementById("tasaCaptura").innerText = "0.00";
-    document.getElementById("esfuerzo").innerText = "7";
+    document.getElementById("tasaCaptura").innerHTML = `0.00 <br><span style="font-size:13px; color:#666; font-weight:normal;">Esfuerzo: <span id="esfuerzo">7</span> cám-día</span>`;
     document.getElementById("indicesBiodiversidad").innerHTML = "H': 0.00<br>D: 0.00";
     document.getElementById("listaDetectadas").innerHTML = "";
     document.getElementById("listaNoDetectadas").innerHTML = "";
