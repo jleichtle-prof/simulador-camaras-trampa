@@ -676,6 +676,7 @@ function crearTablaEspecies(){
  
 function renderMapa(){
     const mapa = document.getElementById("mapaBosque");
+    if(!mapa) return;
     mapa.querySelectorAll(".vegetacion,.camara,.cobertura").forEach(el=>el.remove());
  
     vegetacion.forEach(v=>{
@@ -711,7 +712,6 @@ function cambiarCamaras(valor){
     if(numCamaras > 50) numCamaras = 50;
  
     document.getElementById("camaras").innerText = numCamaras;
-    actualizarEsfuerzo();
     renderMapa();
 }
  
@@ -721,7 +721,6 @@ function cambiarDias(valor){
     if(numDias > 365) numDias = 365;
  
     document.getElementById("dias").innerText = numDias;
-    actualizarEsfuerzo();
 }
  
 function setDetectabilidad(nivel){
@@ -738,10 +737,6 @@ function factorDetectabilidad(){
     if(nivelDetectabilidad === "baja") return 0.5;
     if(nivelDetectabilidad === "alta") return 1.5;
     return 1.0;
-}
- 
-function actualizarEsfuerzo(){
-    document.getElementById("esfuerzo").innerText = numCamaras * numDias;
 }
  
 function ejecutarMonitoreo(){
@@ -842,8 +837,9 @@ function dibujarGraficoCanvas(acumulacion){
     const canvas = document.getElementById("graficoCanvas");
     const ctx = canvas.getContext("2d");
  
-    const ancho = canvas.offsetWidth;
-    const alto = canvas.offsetHeight;
+    // Forzamos asignación de dimensiones según el espacio real disponible
+    const ancho = canvas.clientWidth || 350;
+    const alto = canvas.clientHeight || 250;
     canvas.width = ancho;
     canvas.height = alto;
  
@@ -881,7 +877,7 @@ function dibujarGraficoCanvas(acumulacion){
         ctx.fillText(i,paddingLeft-20,y+4);
     }
  
-    if(acumulacion.length === 0) return;
+    if(!acumulacion || acumulacion.length === 0) return;
  
     ctx.strokeStyle = "#1b6e2b";
     ctx.lineWidth = 3;
@@ -951,16 +947,14 @@ function reiniciar(){
     document.getElementById("listaNoDetectadas").innerHTML = "";
     document.getElementById("textoInterpretacion").innerHTML = "Ejecuta el monitoreo para generar una simulación de detección de especies.";
  
-    dibujarGraficoCanvas([]);
-    actualizarEsfuerzo();
     renderMapa();
+    setTimeout(() => { dibujarGraficoCanvas([]); }, 50);
 }
  
 window.onload = function(){
     crearTablaEspecies();
-    actualizarEsfuerzo();
     renderMapa();
-    dibujarGraficoCanvas([]);
+    setTimeout(() => { dibujarGraficoCanvas([]); }, 50);
 };
 </script>
  
