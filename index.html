@@ -30,7 +30,6 @@ h2{
     margin-bottom:25px;
 }
 
-/* Contenedor principal con distribución limpia */
 .contenedor{
     display:grid;
     grid-template-columns:310px minmax(520px,1.6fr) 390px;
@@ -126,7 +125,6 @@ table{
     width:100%;
     border-collapse:collapse;
     font-size:14px;
-    margin-bottom:15px;
 }
  
 th,td{
@@ -319,6 +317,12 @@ td:first-child{
 .valor-naranja{
     color:#b86b00;
 }
+
+.valor-purpura{
+    color:#6a1b9a;
+    font-size:24px; /* Un poco más pequeño para que quepan ambos índices */
+    margin-top:5px;
+}
  
 .grafico-card{
     margin-top:15px;
@@ -483,15 +487,6 @@ footer{
 <div class="subtexto">Rango: 1 a 365 días</div>
 </div>
  
-<h3>Fauna potencialmente presente</h3>
- 
-<table>
-<thead>
-<tr><th>Especie</th><th>Detectabilidad base</th></tr>
-</thead>
-<tbody id="tablaEspecies"></tbody>
-</table>
-
 <div class="control">
 <label>👁️ Detectabilidad general</label>
 <div class="detectabilidad">
@@ -501,6 +496,15 @@ footer{
 </div>
 <div class="subtexto">Ajusta la probabilidad general de detección.</div>
 </div>
+ 
+<h3>Fauna disponible</h3>
+ 
+<table>
+<thead>
+<tr><th>Especie</th><th>Detectabilidad base</th></tr>
+</thead>
+<tbody id="tablaEspecies"></tbody>
+</table>
  
 <button class="btn-ejecutar" onclick="ejecutarMonitoreo()">▶ Ejecutar monitoreo</button>
 </div>
@@ -549,9 +553,9 @@ footer{
 </div>
  
 <div class="resultado-box">
-<div class="resultado-titulo">Esfuerzo</div>
-<div id="esfuerzo" class="valor">7</div>
-<div class="subtexto">Cámaras-día</div>
+<div class="resultado-titulo">Índices Ecológicos</div>
+<div id="indicesBiodiversidad" class="valor valor-purpura">H': 0.00<br>D: 0.00</div>
+<div class="subtexto">Shannon (H') y Simpson (D)</div>
 </div>
  
 </div>
@@ -583,9 +587,9 @@ Ejecuta el monitoreo para generar una simulación de detección de especies.
 <div class="aprendizaje">
 <strong>¿Qué aprendemos?</strong><br><br>
 ✔ A mayor esfuerzo de muestreo, aumenta la probabilidad de detectar especies.<br>
-✔ Más cámaras mejoran la cobertura espacial del bosque.<br>
-✔ La riqueza observada no siempre representa la riqueza real del área.<br>
-✔ Las especies crípticas pueden estar presentes y no ser detectadas.
+✔ El Índice de Shannon (H') mide la incertidumbre y equitatividad; valores más altos indican una comunidad balanceada.<br>
+✔ El Índice de Simpson (D) mide la probabilidad de dominancia; cercano a 1 significa que unas pocas especies dominan el registro.<br>
+✔ La riqueza observada no siempre representa la riqueza real del área.
 </div>
  
 </div>
@@ -735,11 +739,8 @@ function factorDetectabilidad(){
     return 1.0;
 }
  
-function cursorEstilo(){
-    // Función auxiliar reservada
-}
- 
 function actualizarEsfuerzo(){
+    // Reemplazado el antiguo cálculo estático por numCamaras * numDias para que empiece en 7
     document.getElementById("esfuerzo").innerText = numCamaras * numDias;
 }
  
@@ -786,13 +787,26 @@ function ejecutarMonitoreo(){
     const esfuerzo = numCamaras * numDias;
     const tasa = esfuerzo > 0 ? (registrosTotales / esfuerzo) * 100 : 0;
  
+    // --- CÁLCULO DE SHANNON Y SIMPSON ---
+    let shannon = 0;
+    let simpson = 0;
+ 
+    if(registrosTotales > 0 && riqueza > 0){
+        detectadas.forEach(e => {
+            let pi = e.registros / registrosTotales; // Abundancia relativa
+            shannon -= pi * Math.log(pi);            // Sumatoria de pi * ln(pi)
+            simpson += pi * pi;                      // Sumatoria de pi^2
+        });
+    }
+ 
     document.getElementById("especiesDetectadas").innerText = `${riqueza} / ${especies.length}`;
     document.getElementById("tasaCaptura").innerText = tasa.toFixed(2);
     document.getElementById("esfuerzo").innerText = esfuerzo;
+    document.getElementById("indicesBiodiversidad").innerHTML = `H': ${shannon.toFixed(2)}<br>D: ${simpson.toFixed(2)}`;
  
     actualizarListas(detectadas, noDetectadas);
     dibujarGraficoCanvas(acumulacion);
-    interpretar(riqueza, tasa);
+    interpretar(riqueza, tasa, shannon, simpson);
 }
  
 function actualizarListas(detectadas, noDetectadas){
@@ -829,132 +843,89 @@ function dibujarGraficoCanvas(acumulacion){
     const canvas = document.getElementById("graficoCanvas");
     const ctx = canvas.getContext("2d");
  
-    const ancho = canvas.clientWidth || 350;
-    const alto = canvas.clientHeight || 250;
+    const ancho = canvas.offsetWidth;
+    const alto = canvas.offsetHeight;
     canvas.width = ancho;
     canvas.height = alto;
  
     ctx.clearRect(0,0,ancho,alto);
  
-    // Ajuste de paddings para dar espacio ordenado a las etiquetas de los ejes
-    const paddingLeft = 55;
-    const paddingBottom = 50; 
-    const paddingTop = 25;
+    const paddingLeft = 40;
+    const paddingBottom = 30;
+    const paddingTop = 20;
     const paddingRight = 20;
  
     const graphAncho = ancho - paddingLeft - paddingRight;
     const graphAlto = alto - paddingTop - paddingBottom;
     const maxEspecies = especies.length;
  
-    // --- EJES PRINCIPALES ---
-    ctx.strokeStyle = "#777";
+    ctx.strokeStyle = "#999";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(paddingLeft, paddingTop);
-    ctx.lineTo(paddingLeft, alto - paddingBottom);
-    ctx.lineTo(ancho - paddingRight, alto - paddingBottom);
+    ctx.moveTo(paddingLeft,paddingTop);
+    ctx.lineTo(paddingLeft,alto-paddingBottom);
+    ctx.lineTo(ancho-paddingRight,alto-paddingBottom);
     ctx.stroke();
  
-    // --- REJILLA HORIZONTAL Y VALORES DEL EJE Y ---
-    ctx.strokeStyle = "#e2ece2";
+    ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 1;
+ 
     for(let i=1; i<=maxEspecies; i++){
-        let y = (alto - paddingBottom) - (i / maxEspecies) * graphAlto;
+        let y = (alto-paddingBottom) - (i/maxEspecies)*graphAlto;
         ctx.beginPath();
-        ctx.moveTo(paddingLeft, y);
-        ctx.lineTo(ancho - paddingRight, y);
+        ctx.moveTo(paddingLeft,y);
+        ctx.lineTo(ancho-paddingRight,y);
         ctx.stroke();
  
         ctx.fillStyle = "#555";
-        ctx.font = "11px Arial";
-        ctx.textAlign = "right";
-        ctx.fillText(i, paddingLeft - 8, y + 4);
+        ctx.font = "12px Arial";
+        ctx.fillText(i,paddingLeft-20,y+4);
     }
- 
-    // --- TÍTULO EJE Y (ROTADO 90 GRADOS) ---
-    ctx.save();
-    ctx.translate(15, paddingTop + graphAlto / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillStyle = "#1b6e2b";
-    ctx.font = "bold 12px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("Especies Detectadas (Riqueza)", 0, 0);
-    ctx.restore();
- 
-    // --- EJE X: TIEMPO ---
-    ctx.fillStyle = "#555";
-    ctx.font = "11px Arial";
-    ctx.textAlign = "center";
-    let totalPasos = acumulacion.length > 0 ? acumulacion.length : numDias;
-    let intervaloEtiquetas = Math.ceil(totalPasos / 10); 
-    
-    for(let i=0; i<totalPasos; i++){
-        if(i === 0 || i === totalPasos-1 || (i+1) % intervaloEtiquetas === 0){
-            let x = paddingLeft + (i / (totalPasos - 1 || 1)) * graphAncho;
-            ctx.fillText("D" + (i+1), x, alto - paddingBottom + 16);
-        }
-    }
- 
-    // --- TÍTULO EJE X ---
-    ctx.fillStyle = "#1b6e2b";
-    ctx.font = "bold 12px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("Esfuerzo de Muestreo (Días)", paddingLeft + graphAncho / 2, alto - 12);
  
     if(acumulacion.length === 0) return;
  
-    // --- ÁREA DEGRADADA TRASLÚCIDA BAJO LA CURVA ---
-    ctx.fillStyle = "rgba(46, 125, 50, 0.08)";
-    ctx.beginPath();
-    acumulacion.forEach((val, i) => {
-        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
-        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
-        if(i === 0) ctx.moveTo(x, alto - paddingBottom);
-        ctx.lineTo(x, y);
-    });
-    ctx.lineTo(paddingLeft + graphAncho, alto - paddingBottom);
-    ctx.closePath();
-    ctx.fill();
- 
-    // --- LÍNEA DE LA CURVA ---
-    ctx.strokeStyle = "#2e7d32";
+    ctx.strokeStyle = "#1b6e2b";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    acumulacion.forEach((val, i) => {
-        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
-        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
-        if(i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+ 
+    acumulacion.forEach((val,i)=>{
+        let x = paddingLeft + (i/(acumulacion.length-1 || 1))*graphAncho;
+        let y = (alto-paddingBottom) - (val/maxEspecies)*graphAlto;
+ 
+        if(i === 0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
     });
+ 
     ctx.stroke();
  
-    // --- MARCADORES / PUNTOS DIARIOS ---
-    acumulacion.forEach((val, i) => {
-        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
-        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
-        ctx.fillStyle = "#1b5e20";
+    acumulacion.forEach((val,i)=>{
+        let x = paddingLeft + (i/(acumulacion.length-1 || 1))*graphAncho;
+        let y = (alto-paddingBottom) - (val/maxEspecies)*graphAlto;
+ 
+        ctx.fillStyle = "#1b6e2b";
         ctx.beginPath();
-        ctx.arc(x, y, 4, 0, 2 * Math.PI);
+        ctx.arc(x,y,4,0,2*Math.PI);
         ctx.fill();
     });
 }
  
-function interpretar(riqueza,tasa){
+function interpretar(riqueza, tasa, shannon, simpson){
     let texto = "";
  
     if(riqueza === 0){
         texto = "<strong>Análisis:</strong> No se detectaron especies. Esto puede ocurrir cuando el esfuerzo de muestreo es bajo o la detectabilidad general es reducida.";
     }else if(riqueza < especies.length * 0.4){
-        texto = "<strong>Análisis:</strong> La riqueza observada es baja. El muestreo subestima la biodiversidad real.";
+        texto = "<strong>Análisis:</strong> La riqueza observada es baja. El muestreo subestima severamente la biodiversidad real.";
     }else if(riqueza < especies.length * 0.8){
         texto = "<strong>Análisis:</strong> Riqueza moderada. Se detectaron especies frecuentes, pero aún pueden faltar especies crípticas.";
     }else{
-        texto = "<strong>Análisis:</strong> Excelente monitoreo. El esfuerzo permitió detectar la mayor parte de la riqueza simulada.";
+        texto = "<strong>Análisis:</strong> Excelente monitoreo. El esfuerzo permitió registrar la gran mayoría de la riqueza biológica real.";
     }
  
     texto += `<br><br>
     📊 <strong>Esfuerzo:</strong> ${numCamaras} cámaras × ${numDias} días = <u>${numCamaras*numDias} cámaras-día</u>.<br>
-    📈 <strong>Tasa de captura:</strong> ${tasa.toFixed(2)} fotos por cada 100 cámaras-día.`;
+    📈 <strong>Tasa de captura:</strong> ${tasa.toFixed(2)} fotos por cada 100 cámaras-día.<br>
+    🧬 <strong>Interpretación de índices:</strong> El índice de Shannon obtenido es de <u>${shannon.toFixed(2)}</u> (valores mayores reflejan más equitatividad) y la dominancia de Simpson es de <u>${simpson.toFixed(2)}</u> (cercano a 1 indica que pocas especies concentran todos los registros).`;
  
     document.getElementById("textoInterpretacion").innerHTML = texto;
 }
@@ -971,25 +942,27 @@ function reiniciar(){
         document.getElementById(id).classList.remove("activo");
     });
  
+    document.getElementById("media").add;
     document.getElementById("media").classList.add("activo");
  
     document.getElementById("especiesDetectadas").innerText = "0 / 7";
     document.getElementById("tasaCaptura").innerText = "0.00";
     document.getElementById("esfuerzo").innerText = "7";
+    document.getElementById("indicesBiodiversidad").innerHTML = "H': 0.00<br>D: 0.00";
     document.getElementById("listaDetectadas").innerHTML = "";
     document.getElementById("listaNoDetectadas").innerHTML = "";
     document.getElementById("textoInterpretacion").innerHTML = "Ejecuta el monitoreo para generar una simulación de detección de especies.";
  
+    dibujarGraficoCanvas([]);
     actualizarEsfuerzo();
     renderMapa();
-    setTimeout(() => dibujarGraficoCanvas([]), 50); 
 }
  
 window.onload = function(){
     crearTablaEspecies();
     actualizarEsfuerzo();
     renderMapa();
-    setTimeout(() => dibujarGraficoCanvas([]), 50);
+    dibujarGraficoCanvas([]);
 };
 </script>
  
