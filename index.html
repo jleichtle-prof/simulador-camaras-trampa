@@ -126,6 +126,7 @@ table{
     width:100%;
     border-collapse:collapse;
     font-size:14px;
+    margin-bottom:15px;
 }
  
 th,td{
@@ -482,6 +483,15 @@ footer{
 <div class="subtexto">Rango: 1 a 365 días</div>
 </div>
  
+<h3>Fauna potencialmente presente</h3>
+ 
+<table>
+<thead>
+<tr><th>Especie</th><th>Detectabilidad base</th></tr>
+</thead>
+<tbody id="tablaEspecies"></tbody>
+</table>
+
 <div class="control">
 <label>👁️ Detectabilidad general</label>
 <div class="detectabilidad">
@@ -491,15 +501,6 @@ footer{
 </div>
 <div class="subtexto">Ajusta la probabilidad general de detección.</div>
 </div>
- 
-<h3>Fauna potencialmente presente</h3>
- 
-<table>
-<thead>
-<tr><th>Especie</th><th>Detectabilidad base</th></tr>
-</thead>
-<tbody id="tablaEspecies"></tbody>
-</table>
  
 <button class="btn-ejecutar" onclick="ejecutarMonitoreo()">▶ Ejecutar monitoreo</button>
 </div>
@@ -824,17 +825,17 @@ function dibujarGraficoCanvas(acumulacion){
     const canvas = document.getElementById("graficoCanvas");
     const ctx = canvas.getContext("2d");
  
-    const ancho = canvas.offsetWidth;
-    const alto = canvas.offsetHeight;
+    const ancho = canvas.clientWidth || 350;
+    const alto = canvas.clientHeight || 250;
     canvas.width = ancho;
     canvas.height = alto;
  
     ctx.clearRect(0,0,ancho,alto);
  
     const paddingLeft = 40;
-    const paddingBottom = 30;
+    const paddingBottom = 40; 
     const paddingTop = 20;
-    const paddingRight = 20;
+    const paddingRight = 30;
  
     const graphAncho = ancho - paddingLeft - paddingRight;
     const graphAlto = alto - paddingTop - paddingBottom;
@@ -850,7 +851,6 @@ function dibujarGraficoCanvas(acumulacion){
  
     ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 1;
- 
     for(let i=1; i<=maxEspecies; i++){
         let y = (alto-paddingBottom) - (i/maxEspecies)*graphAlto;
         ctx.beginPath();
@@ -861,6 +861,18 @@ function dibujarGraficoCanvas(acumulacion){
         ctx.fillStyle = "#555";
         ctx.font = "12px Arial";
         ctx.fillText(i,paddingLeft-20,y+4);
+    }
+ 
+    ctx.fillStyle = "#555";
+    ctx.font = "11px Arial";
+    let totalPasos = acumulacion.length > 0 ? acumulacion.length : numDias;
+    
+    let intervaloEtiquetas = Math.ceil(totalPasos / 10); 
+    for(let i=0; i<totalPasos; i++){
+        if(i === 0 || i === totalPasos-1 || (i+1) % intervaloEtiquetas === 0){
+            let x = paddingLeft + (i/(totalPasos-1 || 1))*graphAncho;
+            ctx.fillText("D" + (i+1), x - 8, alto - paddingBottom + 18);
+        }
     }
  
     if(acumulacion.length === 0) return;
@@ -876,7 +888,6 @@ function dibujarGraficoCanvas(acumulacion){
         if(i === 0) ctx.moveTo(x,y);
         else ctx.lineTo(x,y);
     });
- 
     ctx.stroke();
  
     acumulacion.forEach((val,i)=>{
@@ -931,16 +942,16 @@ function reiniciar(){
     document.getElementById("listaNoDetectadas").innerHTML = "";
     document.getElementById("textoInterpretacion").innerHTML = "Ejecuta el monitoreo para generar una simulación de detección de especies.";
  
-    dibujarGraficoCanvas([]);
     actualizarEsfuerzo();
     renderMapa();
+    setTimeout(() => dibujarGraficoCanvas([]), 50); 
 }
  
 window.onload = function(){
     crearTablaEspecies();
     actualizarEsfuerzo();
     renderMapa();
-    dibujarGraficoCanvas([]);
+    setTimeout(() => dibujarGraficoCanvas([]), 50);
 };
 </script>
  
