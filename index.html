@@ -735,6 +735,10 @@ function factorDetectabilidad(){
     return 1.0;
 }
  
+function cursorEstilo(){
+    // Función auxiliar reservada
+}
+ 
 function actualizarEsfuerzo(){
     document.getElementById("esfuerzo").innerText = numCamaras * numDias;
 }
@@ -832,71 +836,105 @@ function dibujarGraficoCanvas(acumulacion){
  
     ctx.clearRect(0,0,ancho,alto);
  
-    const paddingLeft = 40;
-    const paddingBottom = 40; 
-    const paddingTop = 20;
-    const paddingRight = 30;
+    // Ajuste de paddings para dar espacio ordenado a las etiquetas de los ejes
+    const paddingLeft = 55;
+    const paddingBottom = 50; 
+    const paddingTop = 25;
+    const paddingRight = 20;
  
     const graphAncho = ancho - paddingLeft - paddingRight;
     const graphAlto = alto - paddingTop - paddingBottom;
     const maxEspecies = especies.length;
  
-    ctx.strokeStyle = "#999";
+    // --- EJES PRINCIPALES ---
+    ctx.strokeStyle = "#777";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(paddingLeft,paddingTop);
-    ctx.lineTo(paddingLeft,alto-paddingBottom);
-    ctx.lineTo(ancho-paddingRight,alto-paddingBottom);
+    ctx.moveTo(paddingLeft, paddingTop);
+    ctx.lineTo(paddingLeft, alto - paddingBottom);
+    ctx.lineTo(ancho - paddingRight, alto - paddingBottom);
     ctx.stroke();
  
-    ctx.strokeStyle = "#e0e0e0";
+    // --- REJILLA HORIZONTAL Y VALORES DEL EJE Y ---
+    ctx.strokeStyle = "#e2ece2";
     ctx.lineWidth = 1;
     for(let i=1; i<=maxEspecies; i++){
-        let y = (alto-paddingBottom) - (i/maxEspecies)*graphAlto;
+        let y = (alto - paddingBottom) - (i / maxEspecies) * graphAlto;
         ctx.beginPath();
-        ctx.moveTo(paddingLeft,y);
-        ctx.lineTo(ancho-paddingRight,y);
+        ctx.moveTo(paddingLeft, y);
+        ctx.lineTo(ancho - paddingRight, y);
         ctx.stroke();
  
         ctx.fillStyle = "#555";
-        ctx.font = "12px Arial";
-        ctx.fillText(i,paddingLeft-20,y+4);
+        ctx.font = "11px Arial";
+        ctx.textAlign = "right";
+        ctx.fillText(i, paddingLeft - 8, y + 4);
     }
  
+    // --- TÍTULO EJE Y (ROTADO 90 GRADOS) ---
+    ctx.save();
+    ctx.translate(15, paddingTop + graphAlto / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = "#1b6e2b";
+    ctx.font = "bold 12px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Especies Detectadas (Riqueza)", 0, 0);
+    ctx.restore();
+ 
+    // --- EJE X: TIEMPO ---
     ctx.fillStyle = "#555";
     ctx.font = "11px Arial";
+    ctx.textAlign = "center";
     let totalPasos = acumulacion.length > 0 ? acumulacion.length : numDias;
-    
     let intervaloEtiquetas = Math.ceil(totalPasos / 10); 
+    
     for(let i=0; i<totalPasos; i++){
         if(i === 0 || i === totalPasos-1 || (i+1) % intervaloEtiquetas === 0){
-            let x = paddingLeft + (i/(totalPasos-1 || 1))*graphAncho;
-            ctx.fillText("D" + (i+1), x - 8, alto - paddingBottom + 18);
+            let x = paddingLeft + (i / (totalPasos - 1 || 1)) * graphAncho;
+            ctx.fillText("D" + (i+1), x, alto - paddingBottom + 16);
         }
     }
  
+    // --- TÍTULO EJE X ---
+    ctx.fillStyle = "#1b6e2b";
+    ctx.font = "bold 12px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Esfuerzo de Muestreo (Días)", paddingLeft + graphAncho / 2, alto - 12);
+ 
     if(acumulacion.length === 0) return;
  
-    ctx.strokeStyle = "#1b6e2b";
+    // --- ÁREA DEGRADADA TRASLÚCIDA BAJO LA CURVA ---
+    ctx.fillStyle = "rgba(46, 125, 50, 0.08)";
+    ctx.beginPath();
+    acumulacion.forEach((val, i) => {
+        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
+        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
+        if(i === 0) ctx.moveTo(x, alto - paddingBottom);
+        ctx.lineTo(x, y);
+    });
+    ctx.lineTo(paddingLeft + graphAncho, alto - paddingBottom);
+    ctx.closePath();
+    ctx.fill();
+ 
+    // --- LÍNEA DE LA CURVA ---
+    ctx.strokeStyle = "#2e7d32";
     ctx.lineWidth = 3;
     ctx.beginPath();
- 
-    acumulacion.forEach((val,i)=>{
-        let x = paddingLeft + (i/(acumulacion.length-1 || 1))*graphAncho;
-        let y = (alto-paddingBottom) - (val/maxEspecies)*graphAlto;
- 
-        if(i === 0) ctx.moveTo(x,y);
-        else ctx.lineTo(x,y);
+    acumulacion.forEach((val, i) => {
+        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
+        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
+        if(i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     });
     ctx.stroke();
  
-    acumulacion.forEach((val,i)=>{
-        let x = paddingLeft + (i/(acumulacion.length-1 || 1))*graphAncho;
-        let y = (alto-paddingBottom) - (val/maxEspecies)*graphAlto;
- 
-        ctx.fillStyle = "#1b6e2b";
+    // --- MARCADORES / PUNTOS DIARIOS ---
+    acumulacion.forEach((val, i) => {
+        let x = paddingLeft + (i / (acumulacion.length - 1 || 1)) * graphAncho;
+        let y = (alto - paddingBottom) - (val / maxEspecies) * graphAlto;
+        ctx.fillStyle = "#1b5e20";
         ctx.beginPath();
-        ctx.arc(x,y,4,0,2*Math.PI);
+        ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.fill();
     });
 }
