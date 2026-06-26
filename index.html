@@ -320,7 +320,8 @@ td:first-child{
 
 .valor-purpura{
     color:#6a1b9a;
-    font-size:24px; /* Un poco más pequeño para que quepan ambos índices */
+    font-size:24px;
+    line-height:1.2;
     margin-top:5px;
 }
  
@@ -740,7 +741,6 @@ function factorDetectabilidad(){
 }
  
 function actualizarEsfuerzo(){
-    // Reemplazado el antiguo cálculo estático por numCamaras * numDias para que empiece en 7
     document.getElementById("esfuerzo").innerText = numCamaras * numDias;
 }
  
@@ -787,15 +787,14 @@ function ejecutarMonitoreo(){
     const esfuerzo = numCamaras * numDias;
     const tasa = esfuerzo > 0 ? (registrosTotales / esfuerzo) * 100 : 0;
  
-    // --- CÁLCULO DE SHANNON Y SIMPSON ---
     let shannon = 0;
     let simpson = 0;
  
     if(registrosTotales > 0 && riqueza > 0){
         detectadas.forEach(e => {
-            let pi = e.registros / registrosTotales; // Abundancia relativa
-            shannon -= pi * Math.log(pi);            // Sumatoria de pi * ln(pi)
-            simpson += pi * pi;                      // Sumatoria de pi^2
+            let pi = e.registros / registrosTotales;
+            shannon -= pi * Math.log(pi);
+            simpson += pi * pi;
         });
     }
  
@@ -942,7 +941,6 @@ function reiniciar(){
         document.getElementById(id).classList.remove("activo");
     });
  
-    document.getElementById("media").add;
     document.getElementById("media").classList.add("activo");
  
     document.getElementById("especiesDetectadas").innerText = "0 / 7";
